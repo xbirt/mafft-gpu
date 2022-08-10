@@ -125,12 +125,8 @@ OBJGETLAG = mtxutl.o io.o mltaln9.o tddis.o constants.o partSalignmm.o Lalignmm.
 		    Falign.o Falign_localhom.o Galign11.o Lalign11.o genalign11.o SAalignmm.o MSalignmm.o Dalignmm.o \
 			getlag.o defs.o fft.o fftFunctions.o
 OBJGAPFILL = mtxutl.o io.o constants.o gapfill.o defs.o
-OBJDNDFAST5 = dndfast5.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o
-OBJDNDBLAST = dndblast.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o Galign11.o Lalign11.o genalign11.o
 OBJDNDFAST7 = dndfast7.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o Galign11.o Lalign11.o genalign11.o
-OBJDNDFAST6 = dndfast6.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o
-OBJDNDFAST4 = dndfast4.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o
-OBJDNDFAST6 = dndfast6.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o
+OBJDNDBLAST = dndblast.o io.o constants.o mtxutl.o mltaln9.o tddis.o defs.o Galign11.o Lalign11.o genalign11.o
 OBJSEXTET5 = io.o constants.o mtxutl.o mltaln9.o tddis.o sextet5.o defs.o Galign11.o Lalign11.o genalign11.o
 OBJDISTANCE = io.o constants.o mtxutl.o mltaln9.o tddis.o mafft-distance.o defs.o Galign11.o Lalign11.o genalign11.o
 OBJTRIPLET6 = io.o constants.o mtxutl.o mltaln9.o tddis.o triplet6.o defs.o
@@ -282,23 +278,11 @@ mafft-profile : $(OBJGALN)
 gapfill : $(OBJGAPFILL)
 	$(CC) -o $@ $(OBJGAPFILL) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
 
-dndfast4 : $(OBJDNDFAST4)
-	$(CC) -o $@ $(OBJDNDFAST4) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
-
-dndfast5 : $(OBJDNDFAST5)
-	$(CC) -o $@ $(OBJDNDFAST5) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
-
-dndfast6 : $(OBJDNDFAST6)
-	$(CC) -o $@ $(OBJDNDFAST6) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
-
 dndfast7 : $(OBJDNDFAST7)
 	$(CC) -o $@ $(OBJDNDFAST7) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
 
 dndblast : $(OBJDNDBLAST)
 	$(CC) -o $@ $(OBJDNDBLAST) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
-
-dndfast3 : $(OBJDNDFAST3)
-	$(CC) -o $@ $(OBJDNDFAST3) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
 
 triplet : $(OBJTRIPLET)
 	$(CC) -o $@ $(OBJTRIPLET) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
@@ -448,23 +432,8 @@ tditeration.o : tditeration.c $(HEADER)
 mafft-profile.o : mafft-profile.c $(HEADER) $(MTXHEADER)
 	$(CC) $(MYCFLAGS) -c mafft-profile.c
 
-dndfast4.o : dndfast4.c $(HEADER) $(MTXHEADER)
-	$(CC) $(MYCFLAGS) -c dndfast4.c
-
-dndfast5.o : dndfast5.c $(HEADER) $(MTXHEADER)
-	$(CC) $(MYCFLAGS) -c dndfast5.c
-
-dndfast6.o : dndfast6.c $(HEADER) $(MTXHEADER)
-	$(CC) $(MYCFLAGS) -c dndfast6.c
-
 dndfast7.o : dndfast7.c $(HEADER) $(MTXHEADER)
 	$(CC) $(MYCFLAGS) -c dndfast7.c
-
-dndblast.o : dndblast.c $(HEADER) $(MTXHEADER)
-	$(CC) $(MYCFLAGS) -c dndblast.c
-
-dndfast3.o : dndfast3.c $(HEADER) $(MTXHEADER)
-	$(CC) $(MYCFLAGS) -c dndfast3.c
 
 dndpre.o : dndpre.c $(HEADER)
 	$(CC) $(MYCFLAGS) -c dndpre.c
