@@ -395,7 +395,7 @@ static int overridematrix( double **matrix )
 			reporterr( "%c=0x%x cannot be used (2)\n", i2, i2 );
 			exit( 1 );
 		}
-		reporterr( "Score(%c=0x%x,%c=0x%x)=%f\n", i1, i1, i2, i2, v );
+//		reporterr( "Score(%c=0x%x,%c=0x%x)=%f\n", i1, i1, i2, i2, v );
 		matrix[i1][i2] = v;
 		matrix[i2][i1] = v; // 2018/May/11
 		userdefined = 1;
