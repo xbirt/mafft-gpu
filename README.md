@@ -1,7 +1,7 @@
 # MAFFT
 Multiple sequence alignment program
 <br>
-http://mafft.cbrc.jp/alignment/software/
+https://mafft.cbrc.jp/alignment/software/
 
 ## COMPILE
      % cd core
