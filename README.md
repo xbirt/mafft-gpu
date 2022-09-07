@@ -6,7 +6,7 @@ http://mafft.cbrc.jp/alignment/software/
      % make
      % cd ..
 
-If you have the './extensions' directory, which is for RNA alignments,
+If you have the `./extensions` directory, which is for RNA alignments,
      % cd extensions
      % make clean
      % make
@@ -19,14 +19,14 @@ If you have the './extensions' directory, which is for RNA alignments,
      # make install
      # cd ..
 
-If you have the './extensions' directory,
+If you have the `./extensions` directory,
      # cd extensions 
      # make install
      # cd ..
 
-By this procedure (2a), programs are installed into '/usr/local/bin/'. Some binaries, which are not directly used by a user, are installed into '/usr/local/libexec/mafft/'.
+By this procedure (2a), programs are installed into `/usr/local/bin/`. Some binaries, which are not directly used by a user, are installed into `/usr/local/libexec/mafft/`.
 
-If the MAFFT_BINARIES environment variable is set to '/somewhare/else/', the binaries in the '/somewhere/else/' directory are used, instead of those in '/usr/local/libexec/mafft/'.
+If the MAFFT_BINARIES environment variable is set to `/somewhare/else/`, the binaries in the `/somewhere/else/` directory are used, instead of those in `/usr/local/libexec/mafft/`.
 
 ### b. Install to non-default location (root account is not necessary)
      % cd core/
@@ -46,7 +46,7 @@ If the MAFFT_BINARIES environment variable is set to '/somewhare/else/', the bin
      % make
      % make install
 
-     If you have the './extensions' directory,
+If you have the `./extensions` directory,
      % cd ../extensions/
           Edit the first line of Makefile 
           From:
@@ -57,9 +57,9 @@ If the MAFFT_BINARIES environment variable is set to '/somewhare/else/', the bin
      % make
      % make install
 
-The 'MAFFT_BINARIES' environment variable *must not be* set.
+The `MAFFT_BINARIES` environment variable *must not be* set.
 
-If the 'MAFFT_BINARIES' environment variable is set to '/somewhare/else/', it overrides the setting of 'PREFIX' ('/home/your_home/somewhere/' in the above example) in Makefile.
+If the `MAFFT_BINARIES` environment variable is set to `/somewhare/else/`, it overrides the setting of `PREFIX` (`/home/your_home/somewhere/` in the above example) in Makefile.
 
 ## CHECK
      % cd test
@@ -76,7 +76,7 @@ If the 'MAFFT_BINARIES' environment variable is set to '/somewhare/else/', it ov
      % diff test.ginsi sample.ginsi
      % diff test.lins1 sample.lins1
 
-If you have the './extensions' directory,
+If you have the `./extensions` directory,
      % mafft-qinsi samplerna > test.qinsi                       # Q-INS-i
      % mafft-xinsi samplerna > test.xinsi                       # X-INS-i
      % diff test.qinsi samplerna.qinsi
@@ -111,6 +111,6 @@ See also https://mafft.cbrc.jp/alignment/software/
 
 
 ## LICENSE
-See the './license' file.
+See the `./license` file.
 
-If you have the extensions, see also the './license.extensions' file, 
+If you have the extensions, see also the `./license.extensions` file, 
