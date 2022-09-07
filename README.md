@@ -1,5 +1,6 @@
 # MAFFT
 Multiple sequence alignment program
+<br>
 http://mafft.cbrc.jp/alignment/software/
 
 ## COMPILE
