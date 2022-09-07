@@ -115,5 +115,5 @@ See also https://mafft.cbrc.jp/alignment/software/
 
 ## LICENSE
 See the `./license` file.
-
+<br>
 If you have the extensions, see also the `./license.extensions` file.
