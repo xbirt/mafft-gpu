@@ -1920,7 +1920,7 @@ static double MSalignmm_rec( double **n_dynamicmtx, int icyc, int jcyc, double *
 			mseq2[j][len+l] = 0;
 		}
 		for( i=0,j=len; i<l; i++,j++ ) mgt1[j] = '-'; mgt1[j] = 0;
-		for( i=0,j=len; i<l; i++,j++ ) mgt2[j] = 'o'; mgt1[j] = 0;
+		for( i=0,j=len; i<l; i++,j++ ) mgt2[j] = 'o'; mgt2[j] = 0;
 //		fprintf( stderr, "penalizing (2) .. %f(%d), %f(%d)\n", ogcp2[jumpj+1], jumpj+1, fgcp2[jmid-1], jmid-1 );
 		value +=  ( ogcp2[jumpj+1] + fgcp2[jmid-1] );
 //		value += fpenalty;
@@ -1943,7 +1943,7 @@ static double MSalignmm_rec( double **n_dynamicmtx, int icyc, int jcyc, double *
 			mseq2[j][len+l] = 0;
 		}
 		for( i=0,j=len; i<l; i++,j++ ) mgt1[j] = 'o'; mgt1[j] = 0;
-		for( i=0,j=len; i<l; i++,j++ ) mgt2[j] = '-'; mgt1[j] = 0;
+		for( i=0,j=len; i<l; i++,j++ ) mgt2[j] = '-'; mgt2[j] = 0;
 
 //		for( i=0; i<lgth1; i++ ) fprintf( stderr, "ogcp1[%d] = %f\n", i, ogcp1[i] );
 //		for( i=0; i<lgth1; i++ ) fprintf( stderr, "fgcp1[%d] = %f\n", i, fgcp1[i] );
