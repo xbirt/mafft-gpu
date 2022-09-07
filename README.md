@@ -1,10 +1,4 @@
------------------------------------------------------------------------
-  MAFFT: a multiple sequence alignment program
-  version 7.507, 2022/Aug/8
-
-  http://mafft.cbrc.jp/alignment/software/
-  katoh@ifrec.osaka-u.ac.jp
------------------------------------------------------------------------
+http://mafft.cbrc.jp/alignment/software/
 
 ## COMPILE
      % cd core
@@ -12,33 +6,29 @@
      % make
      % cd ..
 
-     If you have the './extensions' directory, which is for RNA alignments,
+If you have the './extensions' directory, which is for RNA alignments,
      % cd extensions
      % make clean
      % make
      % cd ..
 
 
-## INSTALL (select 2a or 2b)
-###  Install to /usr/local/ using root account
+## INSTALL (select a or b below)
+###  a. Install to /usr/local/ using root account
      # cd core
      # make install
      # cd ..
 
-     If you have the './extensions' directory,
+If you have the './extensions' directory,
      # cd extensions 
      # make install
      # cd ..
 
-     By this procedure (2a), programs are installed into 
-     /usr/local/bin/. Some binaries, which are not directly
-     used by a user, are installed into /usr/local/libexec/mafft/.
+By this procedure (2a), programs are installed into '/usr/local/bin/'. Some binaries, which are not directly used by a user, are installed into '/usr/local/libexec/mafft/'.
 
-     If the MAFFT_BINARIES environment variable is set to /somewhare/else/,
-     the binaries in the /somewhere/else/ directory are used, instead 
-     of those in /usr/local/libexec/mafft/.
+If the MAFFT_BINARIES environment variable is set to '/somewhare/else/', the binaries in the '/somewhere/else/' directory are used, instead of those in '/usr/local/libexec/mafft/'.
 
-### Install to non-default location (root account is not necessary)
+### b. Install to non-default location (root account is not necessary)
      % cd core/
           Edit the first line of Makefile 
           From:
@@ -67,11 +57,9 @@
      % make
      % make install
 
-     The MAFFT_BINARIES environment variable *must not be* set.
+The 'MAFFT_BINARIES' environment variable *must not be* set.
 
-     If the MAFFT_BINARIES environment variable is set to /somewhare/else/,
-     it overrides the setting of PREFIX (/home/your_home/somewhere/ in the
-     above example) in Makefile.
+If the 'MAFFT_BINARIES' environment variable is set to '/somewhare/else/', it overrides the setting of 'PREFIX' ('/home/your_home/somewhere/' in the above example) in Makefile.
 
 ## CHECK
      % cd test
@@ -88,22 +76,19 @@
      % diff test.ginsi sample.ginsi
      % diff test.lins1 sample.lins1
 
-     If you have the './extensions' directory,
+If you have the './extensions' directory,
      % mafft-qinsi samplerna > test.qinsi                       # Q-INS-i
      % mafft-xinsi samplerna > test.xinsi                       # X-INS-i
      % diff test.qinsi samplerna.qinsi
      % diff test.xinsi samplerna.xinsi
 
-     If you use the multithread version, the results of iterative refinement
-     methods (*-*-i) are not always identical.  Try this test with the single-
-     thread mode (--thread 0).
+If you use the multithread version, the results of iterative refinement methods (*-*-i) are not always identical.  Try this test with the single-thread mode (--thread 0).
 
 
 ## INPUT FORMAT
-     fasta format.
+Fasta format.
 
-     The type of input sequences (nucleotide or amino acid) is 
-     automatically recognized based on the frequency of A, T, G, C, U and N.
+The type of input sequences (nucleotide or amino acid) is automatically recognized based on the frequency of A, T, G, C, U and N.
 
 
 ##  USAGE
@@ -126,6 +111,6 @@ See also https://mafft.cbrc.jp/alignment/software/
 
 
 ## LICENSE
-     See the './license' file.
+See the './license' file.
 
-     If you have the extensions, see also the './license.extensions' file, 
+If you have the extensions, see also the './license.extensions' file, 
