@@ -6,7 +6,7 @@
   katoh@ifrec.osaka-u.ac.jp
 -----------------------------------------------------------------------
 
-1. COMPILE
+## COMPILE
      % cd core
      % make clean
      % make
@@ -19,8 +19,8 @@
      % cd ..
 
 
-2. INSTALL (select 2a or 2b)
-2a. Install to /usr/local/ using root account
+## INSTALL (select 2a or 2b)
+###  Install to /usr/local/ using root account
      # cd core
      # make install
      # cd ..
@@ -38,7 +38,7 @@
      the binaries in the /somewhere/else/ directory are used, instead 
      of those in /usr/local/libexec/mafft/.
 
-2b. Install to non-default location (root account is not necessary)
+### Install to non-default location (root account is not necessary)
      % cd core/
           Edit the first line of Makefile 
           From:
@@ -73,7 +73,7 @@
      it overrides the setting of PREFIX (/home/your_home/somewhere/ in the
      above example) in Makefile.
 
-3. CHECK
+## CHECK
      % cd test
      % rehash                                                   # if necessary
      % mafft sample > test.fftns2                               # FFT-NS-2
@@ -99,20 +99,20 @@
      thread mode (--thread 0).
 
 
-4. INPUT FORMAT
+## INPUT FORMAT
      fasta format.
 
      The type of input sequences (nucleotide or amino acid) is 
      automatically recognized based on the frequency of A, T, G, C, U and N.
 
 
-5.  USAGE
+##  USAGE
      % /usr/local/bin/mafft input > output
 
-See also http://mafft.cbrc.jp/alignment/software/
+See also https://mafft.cbrc.jp/alignment/software/
 
 
-6. UNINSTALL
+## UNINSTALL
      # rm -r /usr/local/libexec/mafft
      # rm /usr/local/bin/mafft
      # rm /usr/local/bin/fftns
@@ -125,7 +125,7 @@ See also http://mafft.cbrc.jp/alignment/software/
      # rm /usr/local/share/man/man1/mafft*
 
 
-7. LICENSE
+## LICENSE
      See the './license' file.
 
      If you have the extensions, see also the './license.extensions' file, 
