@@ -31,7 +31,7 @@ If you have the `./extensions` directory,
 
 By this procedure (a), programs are installed into `/usr/local/bin/`. Some binaries, which are not directly used by a user, are installed into `/usr/local/libexec/mafft/`.
 
-If the MAFFT_BINARIES environment variable is set to `/somewhare/else/`, the binaries in the `/somewhere/else/` directory are used, instead of those in `/usr/local/libexec/mafft/`.
+If the MAFFT_BINARIES environment variable is set to `/somewhare/else/`, the binaries in this directory are used, instead of those in `/usr/local/libexec/mafft/`.
 
 ### b. Install to non-default location (root account is not necessary)
      % cd core/
