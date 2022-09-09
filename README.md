@@ -89,7 +89,7 @@ If you have the `./extensions` directory,
      % diff test.qinsi samplerna.qinsi
      % diff test.xinsi samplerna.xinsi
 
-If you use the multithread version, the results of iterative refinement methods (*-*-i) are not always identical.  Try this test with the single-thread mode (--thread 0).
+If you use the multithread version, the results of iterative refinement methods (`*-*-i`) are not always identical.  So try this test with the single-thread mode by `--thread 0`.
 
 
 ## INPUT FORMAT
