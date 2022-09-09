@@ -83,6 +83,7 @@ If the `MAFFT_BINARIES` environment variable is set to `/somewhare/else/`, it ov
      % diff test.lins1 sample.lins1
 
 If you have the `./extensions` directory,
+
      % mafft-qinsi samplerna > test.qinsi                       # Q-INS-i
      % mafft-xinsi samplerna > test.xinsi                       # X-INS-i
      % diff test.qinsi samplerna.qinsi
