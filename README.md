@@ -24,6 +24,7 @@ If you have the `./extensions` directory, which is for RNA alignments,
      # cd ..
 
 If you have the `./extensions` directory,
+
      # cd extensions 
      # make install
      # cd ..
@@ -51,6 +52,7 @@ If the MAFFT_BINARIES environment variable is set to `/somewhare/else/`, the bin
      % make install
 
 If you have the `./extensions` directory,
+
      % cd ../extensions/
           Edit the first line of Makefile 
           From:
