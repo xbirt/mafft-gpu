@@ -10,6 +10,7 @@ https://mafft.cbrc.jp/alignment/software/
      % cd ..
 
 If you have the `./extensions` directory, which is for RNA alignments,
+
      % cd extensions
      % make clean
      % make
@@ -27,7 +28,7 @@ If you have the `./extensions` directory,
      # make install
      # cd ..
 
-By this procedure (2a), programs are installed into `/usr/local/bin/`. Some binaries, which are not directly used by a user, are installed into `/usr/local/libexec/mafft/`.
+By this procedure (a), programs are installed into `/usr/local/bin/`. Some binaries, which are not directly used by a user, are installed into `/usr/local/libexec/mafft/`.
 
 If the MAFFT_BINARIES environment variable is set to `/somewhare/else/`, the binaries in the `/somewhere/else/` directory are used, instead of those in `/usr/local/libexec/mafft/`.
 
