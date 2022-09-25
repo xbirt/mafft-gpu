@@ -2651,7 +2651,7 @@ void writeData_pointer( FILE *fp, int locnjob, char **name, int *nlen, char **as
 		fprintf( stderr, "i = %d in writeData\n", i );
 #endif
 		fprintf( fp, ">%s\n", name[i]+1 );
-#if 0
+#if 1
 		nalen = strlen( aseq[i] );
 		for( j=0; j<nalen; j=j+C ) fprintf( fp, "%.*s\n", C, aseq[i]+j );
 #else
@@ -5408,7 +5408,7 @@ void writeData_reorder_pointer( FILE *fp, int locnjob, char **name, int *nlen, c
 		fprintf( stderr, "i = %d in writeData\n", i );
 #endif
 		fprintf( fp, ">%s\n", name[k]+1 );
-#if 0
+#if 1
 		nalen = strlen( aseq[k] );
 		for( j=0; j<nalen; j=j+C )
 			fprintf( fp, "%.*s\n", C, aseq[k]+j );
