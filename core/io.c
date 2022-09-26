@@ -2652,9 +2652,13 @@ void writeData_pointer( FILE *fp, int locnjob, char **name, int *nlen, char **as
 #endif
 		fprintf( fp, ">%s\n", name[i]+1 );
 #if 1
-		nalen = strlen( aseq[i] );
-		if( LineLengthInFASTA < 0 ) LineLengthInFASTA = nalen; // sukoshi muda
-		for( j=0; j<nalen; j=j+LineLengthInFASTA ) fprintf( fp, "%.*s\n", LineLengthInFASTA, aseq[i]+j );
+		if( LineLengthInFASTA < 0 )
+			fprintf( fp, "%s\n", aseq[i] );
+		else // V7.510 deha tsukawanai
+		{
+			nalen = strlen( aseq[i] );
+			for( j=0; j<nalen; j=j+LineLengthInFASTA ) fprintf( fp, "%.*s\n", LineLengthInFASTA, aseq[i]+j );
+		}
 #else
 		fprintf( fp, "%s\n", aseq[i] );
 #endif
@@ -5410,10 +5414,13 @@ void writeData_reorder_pointer( FILE *fp, int locnjob, char **name, int *nlen, c
 #endif
 		fprintf( fp, ">%s\n", name[k]+1 );
 #if 1
-		nalen = strlen( aseq[k] );
-		if( LineLengthInFASTA < 0 ) LineLengthInFASTA = nalen; // sukoshi muda
-		for( j=0; j<nalen; j=j+LineLengthInFASTA )
-			fprintf( fp, "%.*s\n", LineLengthInFASTA, aseq[k]+j );
+		if( LineLengthInFASTA < 0 )
+			fprintf( fp, "%s\n", aseq[k] );
+		else
+		{
+			nalen = strlen( aseq[k] );
+			for( j=0; j<nalen; j=j+LineLengthInFASTA ) fprintf( fp, "%.*s\n", LineLengthInFASTA, aseq[k]+j );
+		}
 #else
 		fprintf( fp, "%s\n", aseq[k] );
 #endif
