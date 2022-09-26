@@ -36,7 +36,7 @@
 
 
 
-#define VERSION "7.509"
+#define VERSION "7.510"
 #define SHOWVERSION reporterr( "%s (%s) Version " VERSION "\nalg=%c, model=%s, amax=%3.1f\n%d thread(s)\n\n", progName( argv[0] ), (dorp=='d')?"nuc":((nblosum==-2)?"text":"aa"), alg, modelname, specificityconsideration, nthread )
 
 #define FFT_THRESHOLD  80
@@ -395,3 +395,4 @@ extern int specifictarget;
 extern int nadd;
 extern int usenaivescoreinsteadofalignmentscore;
 #define MYBUFSIZE 1000 * 1000 * 100 // 100MB
+extern int LineLengthInFASTA;

@@ -171,6 +171,7 @@ void arguments( int argc, char *argv[] )
 	namelen = -1;
 	scoremtx = 1;
 	nblosum = 62;
+	LineLengthInFASTA = -1;
 	dorp = NOTSPECIFIED;
 	kimuraR = NOTSPECIFIED;
 	pamN = NOTSPECIFIED;
@@ -204,6 +205,15 @@ void arguments( int argc, char *argv[] )
 				case 'n':
 					namelen = myatoi( *++argv );
 					fprintf( stderr, "namelen = %d\n", namelen );
+					--argc;
+					goto nextoption;
+				case 'l':
+					LineLengthInFASTA = myatoi( *++argv );
+					if( LineLengthInFASTA == 0 )
+					{
+						reporterr( "LineLengthInFASTA = 0 ??\n" );
+						exit( 1 );
+					}
 					--argc;
 					goto nextoption;
 				case 'f':
