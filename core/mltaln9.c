@@ -15374,7 +15374,7 @@ double sumofpairsscore( int nseq, char **seq )
 int commonsextet_p( int *table, int *pointt )
 {
 	int value = 0;
-	int tmp;
+	unsigned int tmp;
 	int point;
 	static TLS int *memo = NULL;
 	static TLS int *ct = NULL;
@@ -15407,6 +15407,7 @@ int commonsextet_p( int *table, int *pointt )
 		if( tmp < table[point] )
 			value++;
 		if( tmp == 0 ) *cp++ = point;
+// overflow kakunin shinai
 	}
 	*cp = END_OF_VEC;
 	

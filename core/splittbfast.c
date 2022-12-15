@@ -837,26 +837,36 @@ int seq_grp( int *grp, char *seq )
 	return( grp-grpbk );
 }
 
-void makecompositiontable_p( short *table, int *pointt )
+void makecompositiontable_p( int *table, int *pointt )
 {
 	int point;
 
 	while( ( point = *pointt++ ) != END_OF_VEC )
+	{
+#if 0
 		table[point]++;
+#else
+		if( (unsigned int)table[point]++ >= INT_MAX )
+		{
+			reporterr( "Overflow. table[point]=%d>INT_MAX(%d).\n", table[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
+	}
 }
 
-static int localcommonsextet_p( short *table, int *pointt )
+static int localcommonsextet_p( int *table, int *pointt )
 {
 	int value = 0;
-	short tmp;
+	unsigned int tmp;
 	int point;
-	static short *memo = NULL;
+	static int *memo = NULL;
 	static int *ct = NULL;
 	static int *cp;
 
 	if( !memo )
 	{
-		memo = (short *)calloc( tsize, sizeof( short ) );
+		memo = (int *)calloc( tsize, sizeof( int ) );
 		if( !memo ) ErrorExit( "Cannot allocate memo\n" );
 		ct = (int *)calloc( MIN( maxl, tsize )+1, sizeof( int ) );
 		if( !ct ) ErrorExit( "Cannot allocate memo\n" );
@@ -869,6 +879,14 @@ static int localcommonsextet_p( short *table, int *pointt )
 		if( tmp < table[point] )
 			value++;
 		if( tmp == 0 ) *cp++ = point;
+#if 0
+		if( tmp >= INT_MAX )
+		{
+			reporterr( "Overflow.\n" );
+			reporterr( "cp-ct=%d, point=%d, tmp=%d, memo[point]=%d>INT_MAX(%d)\n", cp-ct, point, tmp, memo[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
 	}
 	*cp = END_OF_VEC;
 	
@@ -1167,7 +1185,7 @@ static int splitseq_mq( Scores *scores, int nin, int *nlen, char **seq, char **o
 	double **dfromcp;
 	double **pickmtx;
 	double **yukomtx;
-	static short *table1;
+	static int *table1;
 	Scores **outs, *ptr;
 	int *numin;
 	int *tsukau;
@@ -1368,7 +1386,7 @@ static int splitseq_mq( Scores *scores, int nin, int *nlen, char **seq, char **o
 		}
 		else
 		{
-			table1 = (short *)calloc( tsize, sizeof( short ) );
+			table1 = (int *)calloc( tsize, sizeof( int ) );
 			if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 			makecompositiontable_p( table1, scores[0].pointt );
 		}
@@ -1632,7 +1650,7 @@ exit( 1 );
 		}
 		else
 		{
-			table1 = (short *)calloc( tsize, sizeof( short ) );
+			table1 = (int *)calloc( tsize, sizeof( int ) );
 			if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 			makecompositiontable_p( table1, scores[picks[j]].pointt );
 		}
@@ -2128,7 +2146,7 @@ exit( 1 );
 			}
 			else
 			{
-				table1 = (short *)calloc( tsize, sizeof( short ) );
+				table1 = (int *)calloc( tsize, sizeof( int ) );
 				if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 				makecompositiontable_p( table1, scores[yukos[i]].pointt );
 			}
@@ -2685,7 +2703,7 @@ int main( int argc, char *argv[] )
 	int aan;
 
 	static Scores *scores;
-	static short *table1;
+	static int *table1;
 	static char **tree;
 
 
@@ -2991,7 +3009,7 @@ int main( int argc, char *argv[] )
 		}
 		else
 		{
-			table1 = (short *)calloc( tsize, sizeof( short ) );
+			table1 = (int *)calloc( tsize, sizeof( int ) );
 			if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 			makecompositiontable_p( table1, pointt[i] );
 			scores[i].selfscore = localcommonsextet_p( table1, pointt[i] );

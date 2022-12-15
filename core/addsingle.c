@@ -2107,7 +2107,16 @@ void makecompositiontable_p( int *table, int *pointt )
 	int point;
 
 	while( ( point = *pointt++ ) != END_OF_VEC )
+	{
 		table[point]++;
+#if 0 // kakunin shinai
+		if( (unsigned int)table[point]++ >= INT_MAX )
+		{
+			reporterr( "Overflow. table[point]=%d>INT_MAX(%d).\n", table[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
+	}
 }
 
 

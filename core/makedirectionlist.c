@@ -24,7 +24,7 @@ typedef struct _thread_arg
 	char *tmpseq;
 	int *res;
 	int **spointt;
-	short *table1;
+	int *table1;
 	int iq;
 #ifdef enablemultithread
 	int *jshare;
@@ -332,12 +332,22 @@ void seq_grp( int *grp, char *seq )
 	}
 }
 
-void makecompositiontable_p( short *table, int *pointt )
+void makecompositiontable_p( int *table, int *pointt )
 {
 	int point;
 
 	while( ( point = *pointt++ ) != END_OF_VEC )
+	{
+#if 1
 		table[point]++;
+#else
+		if( (unsigned int)table[point]++ >= INT_MAX )
+		{
+			reporterr( "Overflow. table[point]=%d>INT_MAX(%d).\n", table[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
+	}
 }
 
 
@@ -401,21 +411,21 @@ void makepointtable( int *pointt, int *n )
 	*pointt = END_OF_VEC;
 }
 
-static int localcommonsextet_p2( short *table, int *pointt )
+static int localcommonsextet_p2( int *table, int *pointt )
 {
 	int value = 0;
-	short tmp;
+	unsigned int tmp;
 	int point;
-	short *memo;
+	int *memo;
 	int *ct;
 	int *cp;
 
 	if( *pointt == -1 )
 		return( 0 );
 
-	memo = (short *)calloc( tsize, sizeof( short ) );
+	memo = (int *)calloc( tsize, sizeof( int ) );
 	if( !memo ) ErrorExit( "Cannot allocate memo\n" );
-	ct = (int *)calloc( MIN( maxl, tsize )+1, sizeof( int ) ); // chuui!!
+	ct = (int *)calloc( MIN( maxl, tsize )+1, sizeof( int ) );
 	if( !ct ) ErrorExit( "Cannot allocate memo\n" );
 
 	cp = ct;
@@ -425,6 +435,14 @@ static int localcommonsextet_p2( short *table, int *pointt )
 		if( tmp < table[point] )
 			value++;
 		if( tmp == 0 ) *cp++ = point;
+#if 0 // kakunin shinai
+		if( tmp >= INT_MAX )
+		{
+			reporterr( "Overflow.\n" );
+			reporterr( "cp-ct=%d, point=%d, tmp=%d, memo[point]=%d>INT_MAX(%d)\n", cp-ct, point, tmp, memo[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
 	}
 	*cp = END_OF_VEC;
 	
@@ -448,7 +466,7 @@ static void makecontrastorder6mer( int *order, int **pointt, int **pointt_rev, c
 	int i;
 	double *res;
 	contrastarr *arr;
-	short *table1, *table1_rev;
+	int *table1, *table1_rev;
 
 
 	arr = calloc( iend, sizeof( contrastarr ) );
@@ -457,13 +475,13 @@ static void makecontrastorder6mer( int *order, int **pointt, int **pointt_rev, c
 	for( i=0; i<iend; i++ )
 	{
 		if( i % 100 == 1 ) reporterr( "%d   \r", i );
-		table1 = (short *)calloc( tsize, sizeof( short ) );
+		table1 = (int *)calloc( tsize, sizeof( int ) );
 		if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 		makecompositiontable_p( table1, pointt[i] );
 		res[i] = localcommonsextet_p2( table1, pointt[i] );
 		free( table1 );
 
-		table1_rev = (short *)calloc( tsize, sizeof( short ) );
+		table1_rev = (int *)calloc( tsize, sizeof( int ) );
 		if( !table1_rev ) ErrorExit( "Cannot allocate table1\n" );
 		makecompositiontable_p( table1_rev, pointt_rev[i] );
 		res[i] -= localcommonsextet_p2( table1_rev, pointt[i] );
@@ -572,7 +590,7 @@ static void	*directionthread( void *arg )
 	char *tmpseq = targ->tmpseq;
 	int *res = targ->res;
 	int **spointt = targ->spointt;
-	short *table1 = targ->table1;
+	int *table1 = targ->table1;
 //	int iq = targ->iq;
 #ifdef enablemultithread
 //	int thread_no = targ->thread_no;
@@ -667,7 +685,7 @@ int main( int argc, char *argv[] )
 	int ires, mres, mres2;
 	int *res, *resr, *resf;
 	int *map;
-	static short *table1, *table1_rev;
+	static int *table1, *table1_rev;
 	static char **mseq1f, **mseq1r, **mseq2;
 	int *contrastorder;
 
@@ -993,9 +1011,9 @@ int main( int argc, char *argv[] )
 #else
 			if( !dodp )
 			{
-				table1 = (short *)calloc( tsize, sizeof( short ) );
+				table1 = (int *)calloc( tsize, sizeof( int ) );
 				if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
-				table1_rev = (short *)calloc( tsize, sizeof( short ) );
+				table1_rev = (int *)calloc( tsize, sizeof( int ) );
 				if( !table1_rev ) ErrorExit( "Cannot allocate table1_rev\n" );
 				makecompositiontable_p( table1, pointt[ic] );
 				makecompositiontable_p( table1_rev, pointt_rev[ic] );

@@ -121,20 +121,30 @@ void seq_grp( int *grp, char *seq )
 	}
 }
 
-void makecompositiontable_p( short *table, int *pointt )
+void makecompositiontable_p( int *table, int *pointt )
 {
 	int point;
 
 	while( ( point = *pointt++ ) != END_OF_VEC )
+	{
+#if 1
 		table[point]++;
+#else
+		if( (unsigned int)table[point]++ >= INT_MAX )
+		{
+			reporterr( "Overflow. table[point]=%d>INT_MAX(%d).\n", table[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
+	}
 }
 
-static int localcommonsextet_p( short *table, int *pointt )
+static int localcommonsextet_p( int *table, int *pointt )
 {
 	int value = 0;
-	short tmp;
+	unsigned int tmp;
 	int point;
-	static short *memo = NULL;
+	static int *memo = NULL;
 	static int *ct = NULL;
 	static int *cp;
 
@@ -143,7 +153,7 @@ static int localcommonsextet_p( short *table, int *pointt )
 
 	if( !memo )
 	{
-		memo = (short *)calloc( tsize, sizeof( short ) );
+		memo = (int *)calloc( tsize, sizeof( int ) );
 		if( !memo ) ErrorExit( "Cannot allocate memo\n" );
 		ct = (int *)calloc( MIN( maxl, tsize)+1, sizeof( int ) );
 		if( !ct ) ErrorExit( "Cannot allocate memo\n" );
@@ -157,6 +167,14 @@ static int localcommonsextet_p( short *table, int *pointt )
 			value++;
 		if( tmp == 0 ) *cp++ = point;
 //		fprintf( stderr, "cp - ct = %d (tsize = %d)\n", cp - ct, tsize );
+		#if 0
+		if( tmp >= INT_MAX )
+		{
+			reporterr( "overflow\n" );
+			reporterr( "cp-ct=%d, point=%d, tmp=%d, memo[point]=%d>INT_MAX(%d)\n", cp-ct, point, tmp, memo[point], INT_MAX );
+			exit( 1 );
+		}
+#endif
 	}
 	*cp = END_OF_VEC;
 	
@@ -239,7 +257,7 @@ int main( int argc, char **argv )
 	static int *nlen;
 	double *mtxself;
 	double score;
-	static short *table1;
+	static int *table1;
 	double longer, shorter;
 	double lenfac;
 	double bunbo;
@@ -339,7 +357,7 @@ int main( int argc, char **argv )
 	fprintf( stderr, "\nCalculating i-i scores ... " );
 	for( i=0; i<njob; i++ )
 	{
-		table1 = (short *)calloc( tsize, sizeof( short ) );
+		table1 = (int *)calloc( tsize, sizeof( int ) );
 		if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 		makecompositiontable_p( table1, pointt[i] );
 
@@ -354,7 +372,7 @@ int main( int argc, char **argv )
 	for( i=0; i<norg; i++ )
 	{
 		if( outputformat == 'p' ) fprintf( stdout, "\n%-9d ", i+1 );
-		table1 = (short *)calloc( tsize, sizeof( short ) );
+		table1 = (int *)calloc( tsize, sizeof( int ) );
 		if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 		if( i % 10 == 0 )
 		{

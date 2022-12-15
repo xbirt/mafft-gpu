@@ -81,7 +81,7 @@ void seq_grp( int *grp, char *seq )
 	*grp = END_OF_VEC;
 }
 
-void makecompositiontable_p( short *table, int *pointt )
+void makecompositiontable_p( int *table, int *pointt )
 {
 	int point;
 
@@ -89,18 +89,18 @@ void makecompositiontable_p( short *table, int *pointt )
 		table[point]++;
 }
 
-static int localcommonsextet_p( short *table, int *pointt )
+static int localcommonsextet_p( int *table, int *pointt )
 {
 	int value = 0;
-	short tmp;
+	int tmp;
 	int point;
-	static short *memo = NULL;
+	static int *memo = NULL;
 	static int *ct = NULL;
 	static int *cp;
 
 	if( !memo )
 	{
-		memo = (short *)calloc( tsize, sizeof( short ) );
+		memo = (int *)calloc( tsize, sizeof( int ) );
 		if( !memo ) ErrorExit( "Cannot allocate memo\n" );
 		ct = (int *)calloc( MIN( maxl, tsize)+1, sizeof( int ) );
 		if( !ct ) ErrorExit( "Cannot allocate memo\n" );
@@ -185,7 +185,7 @@ int main( int argc, char **argv )
 	double **mtx;
 	double **mtx2;
 	double score, score0;
-	static short *table1;
+	static int *table1;
 	char b[B];
 
 	arguments( argc, argv );
@@ -261,7 +261,7 @@ int main( int argc, char **argv )
 	}
 	for( i=0; i<njob; i++ )
 	{
-		table1 = (short *)calloc( tsize, sizeof( short ) );
+		table1 = (int *)calloc( tsize, sizeof( int ) );
 		if( !table1 ) ErrorExit( "Cannot allocate table1\n" );
 		if( i % 10 == 0 )
 		{
