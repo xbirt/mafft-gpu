@@ -1836,7 +1836,8 @@ static double estimategapfreq( int n, char **s )
 
 static int terminalmargin( int lshorter, double groupsizefac )
 {
-	return ( lshorter * 2.0 + 100 ) * groupsizefac;
+//	return ( lshorter * 2.0 + 100 ) * groupsizefac;
+	return ( MAX( 5000, lshorter * 2.0 + 100 ) * groupsizefac ); // 2023/Jan/11
 //	return ( lshorter * 1.1 + 10 ) * groupsizefac;
 }
 
@@ -2061,9 +2062,9 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		sgap2 = AllocateCharVec( njob );
 		egap2 = AllocateCharVec( njob );
 		//kouho = AllocateIntVec( NKOUHO_LONG );
-		alignorcopy = AllocateIntVec( MAXSEG );
-		cut1 = AllocateIntVec( MAXSEG );
-		cut2 = AllocateIntVec( MAXSEG );
+		alignorcopy = AllocateIntVec( MAXSEG_GIVENANCHORS );
+		cut1 = AllocateIntVec( MAXSEG_GIVENANCHORS );
+		cut2 = AllocateIntVec( MAXSEG_GIVENANCHORS );
 		//tmpptr1 = AllocateCharMtx( njob, 0 );
 		//tmpptr2 = AllocateCharMtx( njob, 0 );
 		//segment = (Segment *)calloc( MAXSEG, sizeof( Segment ) );
@@ -2123,359 +2124,6 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		localalloclen = nlen;
 	}
 	
-#if 0
-	for( j=0; j<clus1; j++ ) strcpy( tmpseq1[j], seq1[j] );
-	for( j=0; j<clus2; j++ ) strcpy( tmpseq2[j], seq2[j] );
-
-	if( !kobetsubunkatsu )
-	{
-		if( fftkeika ) fprintf( stderr,  " FFT ... " );
-
-		for( j=0; j<n20or4or2; j++ ) vec_init( seqVector1[j], nlen );
-		if( scoremtx == -1 )
-		{
-			for( i=0; i<clus1; i++ )
-				seq_vec_4( seqVector1[0], eff1[i], tmpseq1[i] );
-		}
-		else if( fftscore )
-		{
-			for( i=0; i<clus1; i++ )
-			{
-#if 0
-				seq_vec_2( seqVector1[0], polarity, eff1[i], tmpseq1[i] );
-				seq_vec_2( seqVector1[1], volume,   eff1[i], tmpseq1[i] );
-#else
-				seq_vec_5( seqVector1[0], polarity, volume, eff1[i], tmpseq1[i] );
-#endif
-			}
-		}
-		else
-		{
-			for( i=0; i<clus1; i++ )
-				seq_vec_3( seqVector1, eff1[i], tmpseq1[i] );
-		}
-#if RND
-		for( i=0; i<clus1; i++ )
-		{
-			vec_init2( seqVector1, rndseq1[i], eff1[i], len1, nlen );
-		}
-#endif
-
-		for( j=0; j<n20or4or2; j++ ) vec_init( seqVector2[j], nlen );
-		if( scoremtx == -1 )
-		{
-			for( i=0; i<clus2; i++ )
-				seq_vec_4( seqVector2[0], eff2[i], tmpseq2[i] );
-		}
-		else if( fftscore )
-		{
-			for( i=0; i<clus2; i++ )
-			{
-#if 0
-				seq_vec_2( seqVector2[0], polarity, eff2[i], tmpseq2[i] );
-				seq_vec_2( seqVector2[1], volume,   eff2[i], tmpseq2[i] );
-#else
-				seq_vec_5( seqVector2[0], polarity, volume, eff2[i], tmpseq2[i] );
-#endif
-			}
-		}
-		else
-		{
-			for( i=0; i<clus2; i++ )
-				seq_vec_3( seqVector2, eff2[i], tmpseq2[i] );
-		}
-#if RND
-		for( i=0; i<clus2; i++ )
-		{
-			vec_init2( seqVector2, rndseq2[i], eff2[i], len2, nlen );
-		}
-#endif
-
-
-		for( j=0; j<n20or4or2; j++ )
-		{
-			fft( nlen, seqVector2[j], 0 );
-			fft( nlen, seqVector1[j], 0 );
-		}
-
-		for( k=0; k<n20or4or2; k++ ) 
-		{
-			for( l=0; l<nlen; l++ ) 
-				calcNaiseki( naiseki[k]+l, seqVector1[k]+l, seqVector2[k]+l );
-		}
-		for( l=0; l<nlen; l++ ) 
-		{
-			naisekiNoWa[l].R = 0.0;
-			naisekiNoWa[l].I = 0.0;
-			for( k=0; k<n20or4or2; k++ ) 
-			{
-				naisekiNoWa[l].R += naiseki[k][l].R;
-				naisekiNoWa[l].I += naiseki[k][l].I;
-			}
-		}
-	
-
-		fft( -nlen, naisekiNoWa, 0 );
-	
-		for( m=0; m<=nlen2; m++ ) 
-			soukan[m] = naisekiNoWa[nlen2-m].R;
-		for( m=nlen2+1; m<nlen; m++ ) 
-			soukan[m] = naisekiNoWa[nlen+nlen2-m].R;
-
-
-		nkouho = getKouho( kouho, NKOUHO_LONG, soukan, nlen );
-
-#if 0
-		for( i=0; i<nkouho; i++ )
-		{
-			fprintf( stderr, "kouho[%d] = %d\n", i, kouho[i] );
-		}
-#endif
-	}
-
-#if KEIKA
-	fprintf( stderr, "Searching anchors ... " );
-#endif
-	count = 0;
-
-
-
-	if( kobetsubunkatsu )
-	{
-		maxk = 1;
-		kouho[0] = 0;
-	}
-	else
-	{
-		maxk = nkouho;
-	}
-
-	for( k=0; k<maxk; k++ ) 
-	{
-		lag = kouho[k];
-		if( lag <= -len1 || len2 <= lag ) continue;
-//		fprintf( stderr, "k=%d, lag=%d\n", k, lag );
-		zurasu2( lag, clus1, clus2, seq1, seq2, tmpptr1, tmpptr2 );
-
-//		fprintf( stderr, "lag = %d\n", lag );
-		tmpint = alignableReagion( clus1, clus2, tmpptr1, tmpptr2, eff1, eff2, segment+count );
-//		fprintf( stderr, "lag = %d, %d found\n", lag, tmpint );
-
-//		if( lag == -50 ) exit( 1 );
-		
-		if( count+tmpint > MAXSEG -3 ) ErrorExit( "TOO MANY SEGMENTS.\n" );
-
-//		fprintf( stderr, "##### k=%d / %d\n", k, maxk );
-//		if( tmpint == 0 ) break; // 060430 iinoka ? // 090530 yameta
-		while( tmpint-- > 0 )
-		{
-#if 0
-			if( segment[count].end - segment[count].start < fftWinSize )
-			{
-				count++;
-				continue;
-			}
-#endif
-			if( lag > 0 )
-			{
-				segment1[count].start  = segment[count].start ;
-				segment1[count].end    = segment[count].end   ;
-				segment1[count].center = segment[count].center;
-				segment1[count].score  = segment[count].score;
-
-				segment2[count].start  = segment[count].start  + lag;
-				segment2[count].end    = segment[count].end    + lag;
-				segment2[count].center = segment[count].center + lag;
-				segment2[count].score  = segment[count].score       ;
-			}
-			else
-			{
-				segment1[count].start  = segment[count].start  - lag;
-				segment1[count].end    = segment[count].end    - lag;
-				segment1[count].center = segment[count].center - lag;
-				segment1[count].score  = segment[count].score       ;
-
-				segment2[count].start  = segment[count].start ;
-				segment2[count].end    = segment[count].end   ;
-				segment2[count].center = segment[count].center;
-				segment2[count].score  = segment[count].score ;
-			}
-#if 0
-			fprintf( stderr, "##### k=%d / %d\n", k, maxk );
-			fprintf( stderr, "anchor %d, score = %f\n", count, segment1[count].score );
-			fprintf( stderr, "in 1 %d\n", segment1[count].center );
-			fprintf( stderr, "in 2 %d\n", segment2[count].center );
-#endif
-			segment1[count].pair = &segment2[count];
-			segment2[count].pair = &segment1[count];
-			count++;
-#if 0
-			fprintf( stderr, "count=%d\n", count );
-#endif
-		}
-	}
-#if 1
-	if( !kobetsubunkatsu )
-		if( fftkeika ) fprintf( stderr, "done. (%d anchors) ", count );
-#endif
-	if( !count && fftNoAnchStop )
-		ErrorExit( "Cannot detect anchor!" );
-#if 0
-	fprintf( stderr, "RESULT before sort:\n" );
-	for( l=0; l<count+1; l++ )
-	{
-		fprintf( stderr, "cut[%d]=%d, ", l, segment1[l].center );
-		fprintf( stderr, "%d score = %f\n", segment2[l].center, segment1[l].score );
-	}
-#endif
-
-	for( i=0; i<count; i++ )
-	{
-		sortedseg1[i] = &segment1[i];
-		sortedseg2[i] = &segment2[i];
-	}
-#if 0
-	tmpsort( count, sortedseg1 ); 
-	tmpsort( count, sortedseg2 ); 
-	qsort( sortedseg1, count, sizeof( Segment * ), segcmp );
-	qsort( sortedseg2, count, sizeof( Segment * ), segcmp );
-#else
-	mymergesort( 0, count-1, sortedseg1 ); 
-	mymergesort( 0, count-1, sortedseg2 ); 
-#endif
-	for( i=0; i<count; i++ ) sortedseg1[i]->number = i;
-	for( i=0; i<count; i++ ) sortedseg2[i]->number = i;
-
-
-
-	if( kobetsubunkatsu )
-	{
-		for( i=0; i<count; i++ )
-	    {
-			cut1[i+1] = sortedseg1[i]->center;
-			cut2[i+1] = sortedseg2[i]->center;
-		}
-		cut1[0] = 0;
-		cut2[0] = 0;
-		cut1[count+1] = len1;
-		cut2[count+1] = len2;
-		count += 2;
-	}
-
-	else
-	{
-		if( count < 5000 )
-		{
-			if( crossscoresize < count+2 )
-			{
-				crossscoresize = count+2;
-#if 1
-				if( fftkeika ) fprintf( stderr, "######allocating crossscore, size = %d\n", crossscoresize );
-#endif
-				if( crossscore ) FreeDoubleMtx( crossscore );
-				crossscore = AllocateDoubleMtx( crossscoresize, crossscoresize );
-			}
-			for( i=0; i<count+2; i++ ) for( j=0; j<count+2; j++ )
-				crossscore[i][j] = 0.0;
-			for( i=0; i<count; i++ )
-			{
-				crossscore[segment1[i].number+1][segment1[i].pair->number+1] = segment1[i].score;
-				cut1[i+1] = sortedseg1[i]->center;
-				cut2[i+1] = sortedseg2[i]->center;
-			}
-	
-#if 0
-			fprintf( stderr, "AFTER SORT\n" );
-			for( i=0; i<count+1; i++ ) fprintf( stderr, "%d, %d\n", cut1[i], cut2[i] );
-			fprintf( stderr, "crossscore = \n" );
-			for( i=0; i<count+1; i++ )
-			{
-				for( j=0; j<count+1; j++ )
-					fprintf( stderr, "%.0f ", crossscore[i][j] );
-				fprintf( stderr, "\n" );
-			}
-#endif
-
-			crossscore[0][0] = 10000000.0;
-			cut1[0] = 0; 
-			cut2[0] = 0;
-			crossscore[count+1][count+1] = 10000000.0;
-			cut1[count+1] = len1;
-			cut2[count+1] = len2;
-			count += 2;
-			count0 = count;
-		
-//			fprintf( stderr, "\n\n\ncalling blockAlign2\n\n\n\n" );
-			blockAlign2( cut1, cut2, sortedseg1, sortedseg2, crossscore, &count );
-	
-//			if( count-count0 )
-//				fprintf( stderr, "%d unused anchors\n", count0-count );
-	
-			if( !kobetsubunkatsu && fftkeika )
-				fprintf( stderr, "%d anchors found\n", count );
-			if( fftkeika )
-			{
-				if( count0 > count )
-				{
-#if 0
-					fprintf( stderr, "\7 REPEAT!? \n" ); 
-#else
-					fprintf( stderr, "REPEAT!? \n" ); 
-#endif
-					if( fftRepeatStop ) exit( 1 );
-				}
-#if KEIKA
-				else fprintf( stderr, "done\n" );
-#endif
-			}
-		}
-
-
-		else
-		{
-			fprintf( stderr, "\nMany anchors were found. The upper-level DP is skipped.\n\n" );
-
-			cut1[0] = 0; 
-			cut2[0] = 0;
-			count0 = 0;
-			for( i=0; i<count; i++ )
-			{
-//				fprintf( stderr, "i=%d, %d-%d ?\n", i, sortedseg1[i]->center, sortedseg1[i]->pair->center );
-				if( sortedseg1[i]->center > cut1[count0]
-				 && sortedseg1[i]->pair->center > cut2[count0] )
-				{
-					count0++;
-					cut1[count0] = sortedseg1[i]->center;
-					cut2[count0] = sortedseg1[i]->pair->center;
-				}
-				else
-				{
-					if( i && sortedseg1[i]->score > sortedseg1[i-1]->score )
-					{
-						if( sortedseg1[i]->center > cut1[count0-1]
-						 && sortedseg1[i]->pair->center > cut2[count0-1] )
-						{
-							cut1[count0] = sortedseg1[i]->center;
-							cut2[count0] = sortedseg1[i]->pair->center;
-						}
-						else
-						{
-//							count0--;
-						}
-					}
-				}
-			}
-//			if( count-count0 )
-//				fprintf( stderr, "%d anchors unused\n", count-count0 );
-			cut1[count0+1] = len1;
-			cut2[count0+1] = len2;
-			count = count0 + 2;
-			count0 = count;
-	
-		}
-	}
-	//uwagaki!
-#endif
 
 	marginfac1 = 1.0 + estimategapfreq( clus1, seq1 );
 	marginfac2 = 1.0 + estimategapfreq( clus2, seq2 );
@@ -2499,7 +2147,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 			count0++;
 			continue;
 		}
-		if( count+2 > MAXSEG -3 ) ErrorExit( "TOO MANY SEGMENTS.\n" );
+		if( count+2 > MAXSEG_GIVENANCHORS -3 ) ErrorExit( "TOO MANY SEGMENTS.\n" );
 #if 1 // mattan no tansaku hann'i wo seigen
 		if( count == 0 ) 	
 		{
@@ -2509,9 +2157,9 @@ double Falign_givenanchors( ExtAnch *pairanch,
 			if( pairanch[count0].starti > terminalmargin(pairanch[count0].startj,marginfac1) )
 			{
 //				alignorcopy[1] = 'A';
-//				reporterr( "check 1, because starti=%d > startj=%d -> %d (clus1=%d)\n", pairanch[count0].starti, pairanch[count0].startj, terminalmargin(pairanch[count0].startj,marginfac1), clus1 );
+				reporterr( "check 1, because starti=%d > startj=%d -> %d (clus1=%d)\n", pairanch[count0].starti, pairanch[count0].startj, terminalmargin(pairanch[count0].startj,marginfac1), clus1 );
 				cutadd = pairanch[count0].starti - terminalmargin(pairanch[count0].startj,marginfac1);
-//				reporterr( "cutadd(1)=%d\n", cutadd );
+				reporterr( "cutadd(1)=%d\n", cutadd );
 //				if( 1 || cutadd > TERMINALMARGIN(0) ) // iranai
 				{
 					cut1[1] = cutadd;
@@ -2524,9 +2172,9 @@ double Falign_givenanchors( ExtAnch *pairanch,
 			else if( pairanch[count0].startj > terminalmargin(pairanch[count0].starti, marginfac2) )
 			{
 //				alignorcopy[1] = 'A';
-//				reporterr( "check 2, because startj=%d > starti=%d -> %d (clus2=%d)\n", pairanch[count0].startj, pairanch[count0].starti, terminalmargin(pairanch[count0].starti,marginfac2), clus2 );
+				reporterr( "check 2, because startj=%d > starti=%d -> %d (clus2=%d)\n", pairanch[count0].startj, pairanch[count0].starti, terminalmargin(pairanch[count0].starti,marginfac2), clus2 );
 				cutadd = pairanch[count0].startj - terminalmargin( pairanch[count0].starti, marginfac2 );
-//				reporterr( "cutadd(2)=%d\n", cutadd );
+				reporterr( "cutadd(2)=%d\n", cutadd );
 				{
 					cut1[1] = 0;
 					cut2[1] = cutadd;
@@ -2548,7 +2196,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		if( pairanch[count0].endi - cut1[count] == pairanch[count0].endj - cut2[count] )
 		while( pairanch[count0].endi+1 - cut1[count] > 100 && pairanch[count0].endj+1 - cut2[count] > 100 )
 		{
-			reporterr( "added an anchor, because the length is %d,%d > 100\n", pairanch[count0].endi+1 - cut1[count], pairanch[count0].endj+1 - cut2[count] );
+			reporterr( "added an anchor, because the length is %d,%d > 100.    \r", pairanch[count0].endi+1 - cut1[count], pairanch[count0].endj+1 - cut2[count] );
 			cut1[count+1] = cut1[count] + 100;
 			cut2[count+1] = cut2[count] + 100;
 			alignorcopy[count+1] = 'c';
@@ -2565,6 +2213,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		count += 1;
 		count0++;
 	}
+	reporterr( "\n" );
 
 #if 1 // mattan no tansaku hanni wo seigen
 	alignorcopy[count] = 'a';
@@ -2659,7 +2308,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 //exit( 1 );
 	for( i=0; i<count-1; i++ )
 	{
-		//reporterr( "\ni=%d / %d \n\n", i, count );
+//		reporterr( "\ni=%d / %d \n\n", i, count );
 		*fftlog += 1;
 		if( i == 0 || ( i == 1 && alignorcopy[1] == 'A' ) ) headgp = outgap; else headgp = 1;
 		if( i == count-2 || ( i == count-3 && alignorcopy[count-3] == 'A' ) ) tailgp = outgap; else tailgp = 1;
@@ -2715,7 +2364,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		fprintf( stderr, "DP %03d / %03d %4d to ", i+1, count-1, totallen );
 #else
 #if 1
-		if( 1 || fftkeika ) fprintf( stderr, "DP %05d / %05d \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", i+1, count-1 );
+		if( 1 || fftkeika ) fprintf( stderr, "DP %05d / %05d \r", i+1, count-1 );
 #endif
 #endif
 		for( j=0; j<clus1; j++ )
@@ -2843,12 +2492,12 @@ double Falign_givenanchors( ExtAnch *pairanch,
 			if( starttermcut1 )
 			{
 				for( j=0; j<clus2; j++ ) if( tmpres2[j][0] != '-' ) break;
-				if( j<clus2 ) reporterr( "There may be a problem in a hard-coded parameter (1).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
+				if( j<clus2 ) reporterr( "There may be a problem at the 5' end (1). Please contact katoh@ifrec.osaka-u.ac.jp\n", tmpres2[j] );
 			}
 			else if( starttermcut2 )
 			{
 				for( j=0; j<clus1; j++ ) if( tmpres1[j][0] != '-' ) break;
-				if( j<clus1 ) reporterr( "There may be a problem in a hard-coded parameter (2).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
+				if( j<clus1 ) reporterr( "There may be a problem at the 5' end (2).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
 			}
 			else
 				break;
@@ -2860,13 +2509,13 @@ double Falign_givenanchors( ExtAnch *pairanch,
 			{
 				tmplen = strlen( tmpres2[0] );
 				for( j=0; j<clus2; j++ ) if( tmpres2[j][tmplen-1] != '-' ) break;
-				if( j<clus2 ) reporterr( "There may be a problem in a hard-coded parameter (3).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
+				if( j<clus2 ) reporterr( "There may be a problem at the 3' end (3).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
 			}
 			else if( endtermcut2 )
 			{
 				tmplen = strlen( tmpres1[0] );
 				for( j=0; j<clus1; j++ ) if( tmpres1[j][tmplen-1] != '-' ) break;
-				if( j<clus1 ) reporterr( "There may be a problem in a hard-coded parameter (4).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
+				if( j<clus1 ) reporterr( "There may be a problem at the 3' end (4).  Please contact katoh@ifrec.osaka-u.ac.jp\n" );
 			}
 			else
 				break;
@@ -2879,8 +2528,13 @@ double Falign_givenanchors( ExtAnch *pairanch,
 			fprintf( stderr, "totallen=%d +  nlen=%d > alloclen = %d\n", totallen, nlen, alloclen );
 			ErrorExit( "LENGTH OVER in Falign\n " );
 		}
+#if 0
 		for( j=0; j<clus1; j++ ) strcat( result1[j], tmpres1[j] );
 		for( j=0; j<clus2; j++ ) strcat( result2[j], tmpres2[j] );
+#else
+		for( j=0; j<clus1; j++ ) strcat( result1[j]+totallen, tmpres1[j] );
+		for( j=0; j<clus2; j++ ) strcat( result2[j]+totallen, tmpres2[j] );
+#endif
 		totallen += nlen;
 #if 0
 		fprintf( stderr, "i=%d", i );

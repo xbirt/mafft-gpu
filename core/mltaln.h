@@ -36,7 +36,7 @@
 
 
 
-#define VERSION "7.511"
+#define VERSION "7.514"
 #define SHOWVERSION reporterr( "%s (%s) Version " VERSION "\nalg=%c, model=%s, amax=%3.1f\n%d thread(s)\n\n", progName( argv[0] ), (dorp=='d')?"nuc":((nblosum==-2)?"text":"aa"), alg, modelname, specificityconsideration, nthread )
 
 #define FFT_THRESHOLD  80
@@ -48,6 +48,7 @@
 #define M  500000       /* njob no saidaiti */
 #define N 5000000       /* nlen no saidaiti */
 #define MAXSEG 100000
+#define MAXSEG_GIVENANCHORS 10000000
 #define B     256
 #define C     60       /*  1 gyou no mojisuu */
 #define D      6

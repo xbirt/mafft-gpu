@@ -1617,7 +1617,7 @@ static void checkanchors_strongestfirst( ExtAnch *a, int s, double gapratio1, do
 #else
 		int nearest, mindist;
 		double zurei, zurej;
-		if( p )
+		if( maxanchorseparation != -1.0 && p )
 		{
 			mindist = 999999999;
 			for( q=0; q<p; q++ )
@@ -1643,7 +1643,7 @@ static void checkanchors_strongestfirst( ExtAnch *a, int s, double gapratio1, do
 		}
 		else
 			zurei = zurej = 0.0;
-		if( fabs( zurei - zurej ) > maxanchorseparation )
+		if( maxanchorseparation != -1 && fabs( zurei - zurej ) > maxanchorseparation )
 //		if( fabs( zurei - zurej ) > maxanchorseparation || zurei > maxanchorseparation || zurej > maxanchorseparation ) // test
 		{
 //			reporterr( "warning: long internal gaps in %d-%d, |%5.2f-%5.2f - %5.2f| = %5.2f > %5.2f\n", a[p].i, a[p].j, nogaplenestimation1, nogaplenestimation2, zureij, fabs( zureij - ( nogaplenestimation1, nogaplenestimation2 ) ), maxanchorseparation );
@@ -1691,6 +1691,7 @@ static void checkanchors_strongestfirst( ExtAnch *a, int s, double gapratio1, do
 				a[q].starti = a[q].startj = a[q].startj = a[q].endj = -1;
 			}
 		}
+		if( p % 1000 == 0 ) reporterr( "%d/%d\r", p, s );
 	}
 
 	qsort( a, s, sizeof( ExtAnch ), anchcomp );
@@ -1886,6 +1887,7 @@ static void	pickpairanch( ExtAnch **pairanch, ExtAnch *extanch, int **anchindex,
 	reporterr( "\n" );
 #endif
 
+	reporterr( "Checking external anchors\n" );
 	checkanchors_strongestfirst( *pairanch, s, gapnongapratio( n1, seq1 ), gapnongapratio( n2, seq2 ) );
 
 

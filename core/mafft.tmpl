@@ -1,7 +1,7 @@
 #! /bin/bash 
 er=0;
 myself=`dirname "$0"`/`basename "$0"`; export myself
-version="v7.511 (2022/Dec/15)"; export version
+version="v7.514 (2023/Jan/14)"; export version
 LANG=C; export LANG
 os=`uname`
 progname=`basename "$0"`
@@ -217,7 +217,8 @@ contrafold=$defaultcontrafold
 progressfile="/dev/stderr"
 anchorfile="/dev/null"
 anchoropt=""
-maxanchorseparation=1000
+#maxanchorseparation=1000
+maxanchorseparation=-1 # 2023/Jan/11
 debug=0
 sw=0
 algopt=$defaultalgopt
