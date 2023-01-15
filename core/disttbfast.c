@@ -1468,156 +1468,18 @@ static void indexanchors( ExtAnch *a, int **idx )
 }
 
 
-#if 0
-static void checkanchors_internal( ExtAnch *a )
-{
-	int p, q, r, s;
-	int i, j;
-	int consistent;
-	int m;
-#if 0
-	reporterr( "before sortscore\n" );
-	for( p=0; a[p].i>-1; p++ )
-	{
-		reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
-	}
-#endif
-
-
-	for( r=0; a[r].i>-1; )
-	{
-		i = a[r].i;
-		j = a[r].j;
-		s = r;
-		for( ; i==a[r].i && j==a[r].j; r++ )
-			;
-//		reporterr( "s=%d, r=%d\n", s, r );
-
-		qsort( a+s, r-s, sizeof( ExtAnch ), anchscorecomp );
-#if 0
-		reporterr( "after sortscore, r=%d\n", r );
-		for( p=s; p<r; p++ )
-		{
-			reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
-		}
-		exit( 1 );
-#endif
-
-		for( p=s; p<r; p++ ) 
-		{
-			if( a[p].starti == -1 ) continue;
-			consistent = 1;
-			m = 0;
-			for( q=p+1; q<r; q++ )
-			{
-				if( a[q].starti == -1 ) continue;
-#if 0
-				reporterr( "p=%d, q=%d\n", p, q );
-				reporterr( "p: a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
-				reporterr( "q: a[%d].starti,j=%d,%d, score=%d\n", q, a[q].starti, a[q].startj, a[q].score );
-#endif
-	
-				if( a[p].endi == a[q].endi && a[p].starti == a[q].starti && a[p].endj == a[q].endj && a[p].startj == a[q].startj ) 
-				{
-//					reporterr( "identical\n" );
-//					reporterr( "p: a[%d].regi,regj=%d-%d,%d-%d, score=%d\n", p, a[p].starti, a[p].endi, a[p].startj, a[p].endj, a[p].score );
-//					reporterr( "q: a[%d].regi,regj=%d-%d,%d-%d, score=%d\n", q, a[q].starti, a[q].endi, a[q].startj, a[q].endj, a[q].score );
-					;
-				}
-				else if( a[p].endi < a[q].starti && a[p].endj < a[q].startj ) 
-				{
-//					reporterr( "consistent\n" );
-					;
-				}
-//				else if( a[p].endi == a[q].starti && a[p].endj < a[q].startj && a[q].starti<a[q].endi ) 
-//				{
-//					a[q].starti += 1; // 1 zai overlap
-//				}
-//				else if( a[p].endi < a[q].starti && a[p].endj == a[q].startj && a[q].startj<a[q].endj ) 
-//				{
-//					a[q].startj += 1; // 1 zai overlap
-//				}
-				else if( a[q].endi < a[p].starti && a[q].endj < a[p].startj )
-				{
-//					reporterr( "consistent\n" );
-					;
-				}
-//				else if( a[q].endi == a[p].starti && a[q].endj < a[p].startj && a[q].starti<a[q].endi ) // bug in v7.442
-//				{
-//					a[q].endi -= 1; // 1 zai overlap
-//				}
-//				else if( a[q].endi < a[p].starti && a[q].endj == a[p].startj && a[q].startj<a[q].endj )
-//				{
-//					a[q].endj -= 1; // 1 zai overlap
-//				}
-				else 
-				{
-					consistent = 0;
-					if( a[q].score > m ) m = a[q].score;
-//					reporterr( "INconsistent\n" );
-//					reporterr( "p=%d, q=%d\n", p, q );
-//					reporterr( "p: a[%d].regi,regj=%d-%d,%d-%d, score=%d\n", p, a[p].starti, a[p].endi, a[p].startj, a[p].endj, a[p].score );
-//					reporterr( "q: a[%d].regi,regj=%d-%d,%d-%d, score=%d\n", q, a[q].starti, a[q].endi, a[q].startj, a[q].endj, a[q].score );
-//					a[q].starti = a[q].startj = a[q].startj = a[q].endj = -1;
-//					a[q].score = a[p].score - a[q].score; // ??
-//					a[q].score = ( a[p].score + a[q].score ) / 2; // ??
-					a[q].score = 0;
-				}
-			}
-			if( !consistent )
-//				a[p].score = ( a[p].score + m ) / 2; // >= 0
-				a[p].score -= m; // >= 0
-//				a[p].score = 0;
-		}
-	}
-
-#if 0
-	reporterr( "after filtering\n" );
-	for( p=0; a[p].i>-1; p++ )
-	{
-		reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
-	}
-	exit( 1 );
-#endif
-}
-#endif
-
-static void checkanchors_strongestfirst( ExtAnch *a, int s, double gapratio1, double gapratio2 )
+static void checkanchors_strongestfirst_considerseparation( ExtAnch *a, int s, double gapratio1, double gapratio2 )
 {
 	int p, q;
-	double zureij;
-	double nogaplenestimation1;
-	double nogaplenestimation2;
-#if 0
-	reporterr( "before sortscore\n" );
-	for( p=0; a[p].i>-1; p++ )
-	{
-		reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
-	}
-#endif
 	qsort( a, s, sizeof( ExtAnch ), anchscorecomp );
-
-	nogaplenestimation1 = (double)a[0].starti / (1.0+gapratio1);
-	nogaplenestimation2 = (double)a[0].startj / (1.0+gapratio2);
-	zureij = nogaplenestimation1 - nogaplenestimation2;
 
 	for( p=0; a[p].i>-1; p++ )
 	{
 		if( a[p].starti == -1 ) continue;
 
-#if 0
-		nogaplenestimation1 = (double)a[p].starti / (1.0+gapratio1);
-		nogaplenestimation2 = (double)a[p].startj / (1.0+gapratio2);
-		if( fabs( zureij - ( nogaplenestimation1 - nogaplenestimation2 ) ) > maxanchorseparation )
-		{
-//			reporterr( "warning: long internal gaps in %d-%d, |%5.2f-%5.2f - %5.2f| = %5.2f > %5.2f\n", a[p].i, a[p].j, nogaplenestimation1, nogaplenestimation2, zureij, fabs( zureij - ( nogaplenestimation1, nogaplenestimation2 ) ), maxanchorseparation );
-			a[p].starti = a[p].startj = a[p].startj = a[p].endj = -1;
-			continue;
-		}
-#else
 		int nearest, mindist;
 		double zurei, zurej;
-		if( maxanchorseparation != -1.0 && p )
+		if( p )
 		{
 			mindist = 999999999;
 			for( q=0; q<p; q++ )
@@ -1643,14 +1505,74 @@ static void checkanchors_strongestfirst( ExtAnch *a, int s, double gapratio1, do
 		}
 		else
 			zurei = zurej = 0.0;
-		if( maxanchorseparation != -1 && fabs( zurei - zurej ) > maxanchorseparation )
+		if( fabs( zurei - zurej ) > maxanchorseparation )
 //		if( fabs( zurei - zurej ) > maxanchorseparation || zurei > maxanchorseparation || zurej > maxanchorseparation ) // test
 		{
 //			reporterr( "warning: long internal gaps in %d-%d, |%5.2f-%5.2f - %5.2f| = %5.2f > %5.2f\n", a[p].i, a[p].j, nogaplenestimation1, nogaplenestimation2, zureij, fabs( zureij - ( nogaplenestimation1, nogaplenestimation2 ) ), maxanchorseparation );
 			a[p].starti = a[p].startj = a[p].startj = a[p].endj = -1;
 			continue;
 		}
+
+//		reporterr( "P score=%d, %d-%d, %d-%d\n", a[p].score, a[p].starti, a[p].endi, a[p].startj, a[p].endj );
+		for( q=p+1; a[q].i>-1; q++ )
+		{
+			if( a[q].starti == -1 ) continue;
+//			reporterr( "Q score=%d, %d-%d, %d-%d\n", a[q].score, a[q].starti, a[q].endi, a[q].startj, a[q].endj );
+
+
+			if( a[p].endi < a[q].starti && a[p].endj < a[q].startj ) 
+			{
+//				reporterr( "consistent\n" );
+				;
+			}
+			else if( a[p].endi == a[q].starti && a[p].endj < a[q].startj && a[q].starti<a[q].endi ) 
+			{
+				a[q].starti += 1; // 1 zai overlap
+			}
+			else if( a[p].endi < a[q].starti && a[p].endj == a[q].startj && a[q].startj<a[q].endj ) 
+			{
+				a[q].startj += 1; // 1 zai overlap
+			}
+			else if( a[q].endi < a[p].starti && a[q].endj < a[p].startj )
+			{
+//				reporterr( "consistent\n" );
+				;
+			}
+			else if( a[q].endi == a[p].starti && a[q].endj < a[p].startj && a[q].starti<a[q].endi ) // bug in v7.442
+			{
+				a[q].endi -= 1; // 1 zai overlap
+			}
+			else if( a[q].endi < a[p].starti && a[q].endj == a[p].startj && a[q].startj<a[q].endj )
+			{
+				a[q].endj -= 1; // 1 zai overlap
+			}
+			else 
+			{
+//				reporterr( "INconsistent\n" );
+				a[q].starti = a[q].startj = a[q].startj = a[q].endj = -1;
+			}
+		}
+		if( p % 1000 == 0 ) reporterr( "%d/%d\r", p, s );
+	}
+
+	qsort( a, s, sizeof( ExtAnch ), anchcomp );
+#if 0
+	reporterr( "after filtering and sorting\n" );
+	for( p=0; a[p].i>-1; p++ )
+	{
+		reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
+	}
 #endif
+}
+
+static void checkanchors_strongestfirst( ExtAnch *a, int s )
+{
+	int p, q;
+	qsort( a, s, sizeof( ExtAnch ), anchscorecomp );
+
+	for( p=0; a[p].i>-1; p++ )
+	{
+		if( a[p].starti == -1 ) continue;
 
 //		reporterr( "P score=%d, %d-%d, %d-%d\n", a[p].score, a[p].starti, a[p].endi, a[p].startj, a[p].endj );
 		for( q=p+1; a[q].i>-1; q++ )
@@ -1888,11 +1810,11 @@ static void	pickpairanch( ExtAnch **pairanch, ExtAnch *extanch, int **anchindex,
 #endif
 
 	reporterr( "Checking external anchors\n" );
-	checkanchors_strongestfirst( *pairanch, s, gapnongapratio( n1, seq1 ), gapnongapratio( n2, seq2 ) );
+	if( maxanchorseparation != -1.0 )
+		checkanchors_strongestfirst_considerseparation( *pairanch, s, gapnongapratio( n1, seq1 ), gapnongapratio( n2, seq2 ) );
+	else
+		checkanchors_strongestfirst( *pairanch, s );
 
-
-//	qsort( *pairanch, s, sizeof( ExtAnch ), anchcomp );
-//	checkanchors_new( *pairanch );
 
 #if 0
 	reporterr( "After check\n" );
