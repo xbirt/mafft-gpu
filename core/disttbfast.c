@@ -3472,10 +3472,10 @@ int disttbfast( int ngui, int lgui, char **namegui, char **seqgui, int argc, cha
 		rewind( infp );
 	}
 	
-	if( njob > 1000000 )
+	if( njob > 10000000 )
 	{
-		reporterr(       "The number of sequences must be < %d\n", 1000000 );
-		reporterr(       "Please try the --parttree option for such large data.\n" );
+		reporterr(       "The number of sequences must be < %d\n", 10000000 );
+//		reporterr(       "Please try the --parttree option for such large data.\n" );
 		exit( 1 );
 	}
 

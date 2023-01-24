@@ -2193,12 +2193,13 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		count += 1;
 
 #if 1
+#define DIVIDEANCHOR 100
 		if( pairanch[count0].endi - cut1[count] == pairanch[count0].endj - cut2[count] )
-		while( pairanch[count0].endi+1 - cut1[count] > 100 && pairanch[count0].endj+1 - cut2[count] > 100 )
+		while( pairanch[count0].endi+1 - cut1[count] > DIVIDEANCHOR && pairanch[count0].endj+1 - cut2[count] > DIVIDEANCHOR )
 		{
-			reporterr( "added an anchor, because the length is %d,%d > 100.    \r", pairanch[count0].endi+1 - cut1[count], pairanch[count0].endj+1 - cut2[count] );
-			cut1[count+1] = cut1[count] + 100;
-			cut2[count+1] = cut2[count] + 100;
+			reporterr( "added an anchor, because the length is %d,%d > DIVIDEANCHOR.    \r", pairanch[count0].endi+1 - cut1[count], pairanch[count0].endj+1 - cut2[count] );
+			cut1[count+1] = cut1[count] + DIVIDEANCHOR;
+			cut2[count+1] = cut2[count] + DIVIDEANCHOR;
 			alignorcopy[count+1] = 'c';
 			count += 1;
 		}

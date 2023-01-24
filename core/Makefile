@@ -150,7 +150,7 @@ all : $(PERLPROGS) $(PROGS) $(SCRIPTS)
 	chmod 755 ../scripts/*
 	cp $(PERLPROGS) $(PROGS) ../binaries
 	chmod 755 ../binaries/*
-	cp $(MANPAGES) ../binaries
+#	cp $(MANPAGES) ../binaries
 	@echo done.
 
 sos : $(SOS)
@@ -538,7 +538,7 @@ install : all
 	$(STRIP) $(PROGS) ||: # may fail for dash_client on mac.
 	$(INSTALL) $(PROGS) $(DESTDIR)$(LIBDIR)
 	$(INSTALL) $(PERLPROGS) $(DESTDIR)$(LIBDIR)
-	$(INSTALL) -m 644 $(MANPAGES) $(DESTDIR)$(LIBDIR)
+#	$(INSTALL) -m 644 $(MANPAGES) $(DESTDIR)$(LIBDIR)
 
 	( cd $(DESTDIR)$(BINDIR); \
 rm -f linsi ginsi einsi fftns fftnsi nwns nwnsi xinsi qinsi; \
