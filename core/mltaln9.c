@@ -13930,7 +13930,8 @@ double plainscore( int nseq, char **s )
 	return( v );
 }
 
-int addonetip2top( int njobc, int ***topolc, double **lenc, double **iscorec, int ***topol, double **len, Treedep *dep, int treeout, Addtree *addtree, int iadd, char **name, int *alnleninnode, int *nogaplen, int noalign )
+
+int addonetip2fixedpos( int njobc, int ***topolc, double **lenc, double **iscorec, int ***topol, double **len, Treedep *dep, int treeout, Addtree *addtree, int iadd, char **name, int *alnleninnode, int *nogaplen, int noalign, int torr )
 {
 	int i, j, mem0, mem1, posinnew, m;
 	int nstep;
@@ -14036,13 +14037,14 @@ int addonetip2top( int njobc, int ***topolc, double **lenc, double **iscorec, in
 	}
 #else
 	nearest = 0;
-	minscore = 0.0;
+	if( torr == 't' )
+		minscore = 0.0; // add2top
+	else
+		minscore = 999999.9; // add2root
 #endif
 
 	nearesto = nearest;
 	minscoreo = minscore;
-
-
 
 //	for( i=0; i<njobc-1; i++ ) for( j=i+1; j<njobc; j++ )
 //		reporterr(       "iscorec[%d][%d] = %f\n", i, j, iscorec[i][j-i] );
@@ -14104,7 +14106,7 @@ int addonetip2top( int njobc, int ***topolc, double **lenc, double **iscorec, in
 //seqlengthcondition = ( nogaplentoadd <= reflen ); // CHUUI
 
 //		if( repnorg == -1 && dep[i].distfromtip * 2 > minscore && seqlengthcondition )  // Keitouteki ichi ha fuseikaku.
-		if( repnorg == -1 && dep[i].distfromtip * 2 >= minscore ) // Keitouteki ichi dake ga hitsuyouna baaiha kore wo tsukau.
+		if( torr == 't' && repnorg == -1 && dep[i].distfromtip * 2 >= minscore ) // Keitouteki ichi dake ga hitsuyouna baaiha kore wo tsukau.
 		{
 //			reporterr(       "INSERT HERE, %d-%d\n", nearest, norg );
 //			reporterr(       "nearest = %d\n", nearest );

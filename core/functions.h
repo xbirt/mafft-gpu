@@ -362,7 +362,7 @@ extern int overlapmember( int *mem1, int *mem2 );
 extern void profilealignment2( int n0, int n2, char **aln0, char **aln2, int alloclen, char alg );
 extern void sreverse( char *r, char *s );
 extern int addonetip( int njobc, int ***topolc, double **lenc, double **iscorec, int ***topol, double **len, Treedep *dep, int treeout, Addtree *addtree, int iadd, char **name, int *alnleninnode, int *nogaplen, int noalign );
-extern int addonetip2top( int njobc, int ***topolc, double **lenc, double **iscorec, int ***topol, double **len, Treedep *dep, int treeout, Addtree *addtree, int iadd, char **name, int *alnleninnode, int *nogaplen, int noalign );
+extern int addonetip2fixedpos( int njobc, int ***topolc, double **lenc, double **iscorec, int ***topol, double **len, Treedep *dep, int treeout, Addtree *addtree, int iadd, char **name, int *alnleninnode, int *nogaplen, int noalign, int toporroot );
 extern void intcpy( int *s1, int *s2 );
 extern void intncpy( int *s1, int *s2, int n );
 extern void fltncpy( double *s1, double *s2, int n );

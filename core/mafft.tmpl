@@ -1,7 +1,7 @@
 #! /bin/bash 
 er=0;
 myself=`dirname "$0"`/`basename "$0"`; export myself
-version="v7.516 (2023/Jan/24)"; export version
+version="v7.518 (2023/Feb/17)"; export version
 LANG=C; export LANG
 os=`uname`
 progname=`basename "$0"`
@@ -681,6 +681,11 @@ if [ $# -gt 0 ]; then
 			addarg0="-K -I"
 			addfile="$1"
 			fragment=-3
+		elif [ "$1" = "--addtoroot" ]; then 
+			shift   
+			addarg0="-K -I"
+			addfile="$1"
+			fragment=-4
 		elif [ "$1" = "--smoothing" ]; then 
 			add2ndhalfarg=$add2ndhalfarg" -p "
 		elif [ "$1" = "--keeplength" ]; then 
@@ -2051,6 +2056,11 @@ $ownlist"
 		elif [ $fragment -eq "-3" ]; then
 			addarg="$addarg0 $nadd"
 			addsinglearg="-x"       # add to top, 2021/12/31
+			cycle=1 # chuui 2014Aug25
+			iterate=0
+		elif [ $fragment -eq "-4" ]; then
+			addarg="$addarg0 $nadd"
+			addsinglearg="-s"       # add to root, 2023/2/11
 			cycle=1 # chuui 2014Aug25
 			iterate=0
 		else

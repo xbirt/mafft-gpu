@@ -1070,6 +1070,9 @@ void arguments( int argc, char *argv[] )
 				case 'U':
 					treein = 1;
 					break;
+				case 's':
+					addtotop = 2;
+					break;
 				case 'x':
 					addtotop = 1;
 					break;
@@ -1838,8 +1841,10 @@ static void	*addsinglethread( void *arg )
 //			}
 //			fixed_musclesupg_double_realloc_nobk_halfmtx( njobc, iscorec, topolc, lenc, depc, 0, 1 );
 
-			if( addtotop )
-				neighbor = addonetip2top( njobc, topolc, lenc, iscorec, topol, len, dep, treeout, addtree, iadd, name, alnleninnode, nogaplenjusttodecideaddhereornot, noalign );
+			if( addtotop == 2 ) // root
+				neighbor = addonetip2fixedpos( njobc, topolc, lenc, iscorec, topol, len, dep, treeout, addtree, iadd, name, alnleninnode, nogaplenjusttodecideaddhereornot, noalign, 'r' );
+			else if( addtotop == 1 ) // top
+				neighbor = addonetip2fixedpos( njobc, topolc, lenc, iscorec, topol, len, dep, treeout, addtree, iadd, name, alnleninnode, nogaplenjusttodecideaddhereornot, noalign, 't' );
 			else
 				neighbor = addonetip( njobc, topolc, lenc, iscorec, topol, len, dep, treeout, addtree, iadd, name, alnleninnode, nogaplenjusttodecideaddhereornot, noalign );
 
