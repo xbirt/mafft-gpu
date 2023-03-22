@@ -425,8 +425,8 @@ int extendedmtx( double **matrix, double *freq, unsigned char *amino, char *amin
 			matrix[i][j] = matrix[j][i] = (double)-1.0;
 		}
 	}
-//	for( i=0; i<nalphabets; i++ )
-//		matrix[i][i] = matrix[i][i] = (double)1.0;
+	for( i=0; i<nalphabets; i++ )
+		matrix[i][i] = matrix[i][i] = (double)1.0;
 
 	userdefined = overridematrix( matrix );
 
