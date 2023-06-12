@@ -215,6 +215,16 @@ void arguments( int argc, char *argv[] )
 		{
             switch( c )
             {
+				case 'y':
+                                        distout = *(*++argv);
+					reporterr(       "distout=%c\n", distout );
+                                        if( distout != 'c' && distout != 'h' )
+                                        {
+                                            reporterr(       "Set -y c or -y h in v>=7.521.\n" );
+                                            exit( 1 );
+                                        }
+					--argc; 
+					goto nextoption;
 				case 'Z':
 					usenaivescoreinsteadofalignmentscore = 1;
 					break;

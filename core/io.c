@@ -2924,6 +2924,53 @@ void readhat2( FILE *fp, int nseq, char name[M][B], double **mtx )
     }
 }
 
+static void WriteHat2_pointer_clustaloformat( int locnjob, char **name, double **mtx )
+{
+	int i, j;
+        FILE *fp = fopen( "clodist", "w" );
+	fprintf( fp, "%d\n", locnjob );
+
+	for( i=0; i<locnjob; i++ )
+	{
+                fprintf( fp, "%-5.5s ", name[i]+1 );
+		for( j=0; j<i; j++ )
+		{
+			fprintf( fp, "%10.8f ", mtx[j][i] );
+		}
+		fprintf( fp, "%10.8f ", 0.0 );
+		for( j=i+1; j<locnjob; j++ )
+		{
+			fprintf( fp, "%10.8f ", mtx[i][j] );
+		}
+		fprintf( fp, "\n" );
+
+	}
+        fclose( fp );
+}
+static void WriteFloatHat2_pointer_halfmtx_clustaloformat( int locnjob, char **name, double **mtx )
+{
+	int i, j;
+        FILE *fp = fopen( "clodist", "w" );
+	fprintf( fp, "%d\n", locnjob );
+
+	for( i=0; i<locnjob; i++ )
+	{
+                fprintf( fp, "%-5.5s ", name[i]+1 );
+		for( j=0; j<i; j++ )
+		{
+			fprintf( fp, "%10.8f ", mtx[j][i-j] );
+		}
+		fprintf( fp, "%10.8f ", 0.0 );
+		for( j=i+1; j<locnjob; j++ )
+		{
+			fprintf( fp, "%10.8f ", mtx[i][j-i] );
+		}
+		fprintf( fp, "\n" );
+
+	}
+        fclose( fp );
+}
+
 void WriteFloatHat2_pointer_halfmtx( FILE *hat2p, int locnjob, char **name, double **mtx )
 {
 	int i, j, ijsa;
@@ -2937,15 +2984,18 @@ void WriteFloatHat2_pointer_halfmtx( FILE *hat2p, int locnjob, char **name, doub
 	for( i=0; i<locnjob; i++ ) fprintf( hat2p, "%4d. %s\n", i+1, name[i] );
 	for( i=0; i<locnjob; i++ )
 	{
-		for( j=i+1; j<njob; j++ )
+		for( j=i+1; j<locnjob; j++ )
 		{
 			fprintf( hat2p, DFORMAT, mtx[i][j-i] );
 			ijsa = j-i;
 			if( ijsa % 12 == 0 || ijsa == locnjob-i-1 ) fprintf( hat2p, "\n" );
 		}
 	}
+        if( distout == 'c' )
+            WriteFloatHat2_pointer_halfmtx_clustaloformat( locnjob, name, mtx );
 }
 
+#if 0
 void WriteFloatHat2_pointer( FILE *hat2p, int locnjob, char **name, double **mtx )
 {
 	int i, j;
@@ -3009,6 +3059,7 @@ void WriteHat2_int( FILE *hat2p, int locnjob, char name[M][B], int **mtx )
 		}
 	}
 }
+#endif
 
 void WriteHat2_part_pointer( FILE *hat2p, int locnjob, int nadd, char **name, double **mtx )
 {
@@ -3030,6 +3081,8 @@ void WriteHat2_part_pointer( FILE *hat2p, int locnjob, int nadd, char **name, do
 			if( (j+1) % 12 == 0 || j == nadd-1 ) fprintf( hat2p, "\n" );
 		}
 	}
+        if( distout == 'c' )
+            WriteHat2_pointer_clustaloformat( locnjob, name, mtx );
 }
 
 void WriteHat2_pointer( FILE *hat2p, int locnjob, char **name, double **mtx )
@@ -3051,6 +3104,8 @@ void WriteHat2_pointer( FILE *hat2p, int locnjob, char **name, double **mtx )
 			if( (j-i) % 12 == 0 || j == locnjob-1 ) fprintf( hat2p, "\n" );
 		}
 	}
+        if( distout == 'c' )
+            WriteHat2_pointer_clustaloformat( locnjob, name, mtx );
 }
 
 void WriteHat2( FILE *hat2p, int locnjob, char name[M][B], double **mtx )

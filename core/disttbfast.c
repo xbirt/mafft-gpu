@@ -16,7 +16,6 @@ static int treein;
 static int topin;
 static int treeout;
 static int noalign;
-static int distout;
 static int tuplesize;
 static int subalignment;
 static int subalignmentoffset;
@@ -314,8 +313,15 @@ void arguments( int argc, char *argv[] )
 					addprofile = 0;
 					break;
 				case 'y':
-					distout = 1;
-					break;
+                                        distout = *(*++argv);
+					reporterr(       "distout=%c\n", distout );
+                                        if( distout != 'c' && distout != 'h' )
+                                        {
+                                            reporterr(       "Set -y c or -y h in v>=7.521.\n" );
+                                            exit( 1 );
+                                        }
+					--argc; 
+					goto nextoption;
 				case 't':
 					treeout = 1;
 					break;

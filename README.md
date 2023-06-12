@@ -1,4 +1,4 @@
-# MAFFT version 7.520
+# MAFFT version 7.522
 Multiple sequence alignment program
 <br>
 https://mafft.cbrc.jp/alignment/software/

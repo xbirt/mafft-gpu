@@ -10,7 +10,6 @@
 static int treein;
 static int topin;
 static int treeout;
-static int distout;
 static int noalign;
 static int multidist;
 static int subalignment;
@@ -343,8 +342,15 @@ static void arguments( int argc, char *argv[], int *pac, char **pav, int *tac, c
 					addprofile = 0;
 					break;
 				case 'y':
-					distout = 1;
-					break;
+                                        distout = *(*++argv);
+					reporterr(       "distout=%c\n", distout );
+                                        if( distout != 'c' && distout != 'h' )
+                                        {
+                                            reporterr(       "Set -y c or -y h in v>=7.521.\n" );
+                                            exit( 1 );
+                                        }
+					--argc; 
+					goto nextoption;
 				case 't':
 					treeout = 1;
 					break;

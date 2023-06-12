@@ -134,6 +134,8 @@ int maxl, tsize;
 char codonpos = 0;
 char codonscore = 0;
 
+char distout = 0;
+
 
 void initglobalvariables()
 {
