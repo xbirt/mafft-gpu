@@ -2059,7 +2059,7 @@ void createchain( int nseq, int ***topol, double **len, char **name, int *nlen, 
 	FILE *fp;
 	int i, j;
 	double l, ll;
-	int treelen;
+	size_t treelen;
 	char **tree;
 	char *instanttree;
 	int posinit;
@@ -2301,7 +2301,7 @@ void createchain( int nseq, int ***topol, double **len, char **name, int *nlen, 
 	FILE *fp;
 	int i, j;
 	double l, ll;
-	int treelen;
+	size_t treelen;
 	char **tree;
 	char *instanttree;
 	int posinit;
@@ -2831,7 +2831,7 @@ void loadtree( int nseq, int ***topol, double **len, char **name, int *nlen, Tre
 
 int check_guidetreefile( int *seed, int *npick, double *limitram )
 {
-	char string[100];
+	char string[1000];
 	char *sizestring;
 	FILE *fp;
 	double tanni;
@@ -2847,7 +2847,7 @@ int check_guidetreefile( int *seed, int *npick, double *limitram )
 		exit( 1 );
 	}
 
-	fgets( string, 999, fp );
+	fgets( string, sizeof(string) / sizeof(char), fp );
 	fclose( fp );
 
 	if( !strncmp( string, "shuffle", 7 ) )
