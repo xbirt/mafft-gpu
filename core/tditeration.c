@@ -246,7 +246,6 @@ static void Writeoptions( FILE *fp )
 	}
 }
 
-#ifdef enablemultithread
 
 static void freelocalarrays( 
 	double *tscorehistory,
@@ -327,6 +326,7 @@ static void freelocalarrays(
 	}
 }
 
+#ifdef enablemultithread
 
 static void *athread( void *arg )
 {

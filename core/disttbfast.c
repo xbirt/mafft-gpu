@@ -1370,6 +1370,7 @@ static void *distancematrixthread( void *arg )
 		free( table1 );
 	}
 }
+#endif // enablemultithread
 
 static void recountpositions( ExtAnch *pairanch, int n1, int n2, char **seq1, char **seq2 ) // loop no junban kentou
 {
@@ -1832,6 +1833,7 @@ static void	pickpairanch( ExtAnch **pairanch, ExtAnch *extanch, int **anchindex,
 #endif
 }
 
+#ifdef enablemultithread
 static void *treebasethread( void *arg )
 {
 	treebasethread_arg_t *targ = (treebasethread_arg_t *)arg;
@@ -2347,7 +2349,7 @@ static void *treebasethread( void *arg )
 	reporterr(       "totalscore = %10.2f\n\n", tscore );
 #endif
 }
-#endif
+#endif // enablemultithread
 
 static int dooneiteration( int *nlen, char **aseq, int nadd, char *mergeoralign, char **mseq1, char **mseq2, int ***topol, Treedep *dep, int **memhist, double ***cpmxhist, double *effarr, double **newdistmtx, int *selfscore, ExtAnch *extanch, int **anchindex, int *alloclen, int (*callback)(int, int, char*) )
 {
