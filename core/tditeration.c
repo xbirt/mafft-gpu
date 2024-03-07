@@ -2389,7 +2389,6 @@ int TreeDependentIteration( int locnjob, char **name, int nlen[M],
 //	if( grouprna2 ) free( grouprna2 );
 
 #if 1
-#if 0 // dame
 				freelocalarrays
 				( 
 					NULL,
@@ -2410,7 +2409,6 @@ int TreeDependentIteration( int locnjob, char **name, int nlen[M],
 					eff1s, eff2s,
 					whichmtx
 				);
-#endif
 	if( branchnode ) free( branchnode );
 	if( stopol) free( stopol );
 	if( mtx ) FreeDoubleMtx( mtx );
