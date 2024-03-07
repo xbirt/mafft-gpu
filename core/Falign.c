@@ -1836,8 +1836,8 @@ static double estimategapfreq( int n, char **s )
 
 static int terminalmargin( int lshorter, double groupsizefac )
 {
-//	return ( lshorter * 2.0 + 100 ) * groupsizefac;
-	return ( MAX( 5000, lshorter * 2.0 + 100 ) * groupsizefac ); // 2023/Jan/11
+	return ( lshorter * 2.0 + maxterminalmargin ) * groupsizefac;
+//	return ( MAX( 5000, lshorter * 2.0 + 100 ) * groupsizefac ); // 2023/Jan/11
 //	return ( lshorter * 1.1 + 10 ) * groupsizefac;
 }
 
@@ -2160,7 +2160,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 				reporterr( "check 1, because starti=%d > startj=%d -> %d (clus1=%d)\n", pairanch[count0].starti, pairanch[count0].startj, terminalmargin(pairanch[count0].startj,marginfac1), clus1 );
 				cutadd = pairanch[count0].starti - terminalmargin(pairanch[count0].startj,marginfac1);
 				reporterr( "cutadd(1)=%d\n", cutadd );
-//				if( 1 || cutadd > TERMINALMARGIN(0) ) // iranai
+//				if( 0 || cutadd > TERMINALMARGIN(0) ) // iranai
 				{
 					cut1[1] = cutadd;
 					cut2[1] = 0;

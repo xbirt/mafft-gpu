@@ -136,6 +136,8 @@ char codonscore = 0;
 
 char distout = 0;
 
+int maxterminalmargin = 5000;
+
 
 void initglobalvariables()
 {

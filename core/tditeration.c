@@ -246,7 +246,6 @@ static void Writeoptions( FILE *fp )
 	}
 }
 
-#ifdef enablemultithread
 
 static void freelocalarrays( 
 	double *tscorehistory,
@@ -327,6 +326,7 @@ static void freelocalarrays(
 	}
 }
 
+#ifdef enablemultithread
 
 static void *athread( void *arg )
 {
@@ -2389,6 +2389,7 @@ int TreeDependentIteration( int locnjob, char **name, int nlen[M],
 //	if( grouprna2 ) free( grouprna2 );
 
 #if 1
+#if 0 // dame
 				freelocalarrays
 				( 
 					NULL,
@@ -2409,6 +2410,7 @@ int TreeDependentIteration( int locnjob, char **name, int nlen[M],
 					eff1s, eff2s,
 					whichmtx
 				);
+#endif
 	if( branchnode ) free( branchnode );
 	if( stopol) free( stopol );
 	if( mtx ) FreeDoubleMtx( mtx );

@@ -29,7 +29,6 @@ static double maxdistmtxsize;
 static int nthreadtb;
 static int useexternalanchors;
 static int oneiteration;
-static double maxanchorseparation;
 
 #if 0
 #define PLENFACA 0.0123
@@ -221,7 +220,6 @@ void arguments( int argc, char *argv[] )
 	mapout = 0;
 	smoothing = 0;
 	nwildcard = 0;
-	maxanchorseparation = 1000.0;
 
     while( --argc > 0 && (*++argv)[0] == '-' )
 	{
@@ -347,7 +345,7 @@ void arguments( int argc, char *argv[] )
 					fftscore = 0;
 					break;
 				case 'x':
-					maxanchorseparation = myatof( *++argv );
+					maxterminalmargin = myatoi( *++argv );
 					--argc; 
 					goto nextoption;
 				case 'H':
@@ -1370,6 +1368,7 @@ static void *distancematrixthread( void *arg )
 		free( table1 );
 	}
 }
+#endif // enablemultithread
 
 static void recountpositions( ExtAnch *pairanch, int n1, int n2, char **seq1, char **seq2 ) // loop no junban kentou
 {
@@ -1473,104 +1472,6 @@ static void indexanchors( ExtAnch *a, int **idx )
 #endif
 }
 
-
-static void checkanchors_strongestfirst_considerseparation( ExtAnch *a, int s, double gapratio1, double gapratio2 )
-{
-	int p, q;
-	qsort( a, s, sizeof( ExtAnch ), anchscorecomp );
-
-	for( p=0; a[p].i>-1; p++ )
-	{
-		if( a[p].starti == -1 ) continue;
-
-		int nearest, mindist;
-		double zurei, zurej;
-		if( p )
-		{
-			mindist = 999999999;
-			for( q=0; q<p; q++ )
-			{
-				if( a[q].starti == -1 ) continue;
-				if( abs( a[p].starti - a[q].starti ) < mindist )
-				{
-					nearest = q;
-					mindist = abs( a[p].starti - a[q].starti );
-				}
-			}
-			//reporterr( "nearest=%d\n", nearest );
-			if( a[nearest].starti < a[p].starti )
-			{
-				zurei = (double)( a[p].starti - a[nearest].endi )/(1.0+gapratio1);
-				zurej = (double)( a[p].startj - a[nearest].endj )/(1.0+gapratio2);
-			}
-			else
-			{
-				zurei = (double)( a[nearest].starti - a[p].endi )/(1.0+gapratio1);
-				zurej = (double)( a[nearest].startj - a[p].endj )/(1.0+gapratio2);
-			}
-		}
-		else
-			zurei = zurej = 0.0;
-		if( fabs( zurei - zurej ) > maxanchorseparation )
-//		if( fabs( zurei - zurej ) > maxanchorseparation || zurei > maxanchorseparation || zurej > maxanchorseparation ) // test
-		{
-//			reporterr( "warning: long internal gaps in %d-%d, |%5.2f-%5.2f - %5.2f| = %5.2f > %5.2f\n", a[p].i, a[p].j, nogaplenestimation1, nogaplenestimation2, zureij, fabs( zureij - ( nogaplenestimation1, nogaplenestimation2 ) ), maxanchorseparation );
-			a[p].starti = a[p].startj = a[p].startj = a[p].endj = -1;
-			continue;
-		}
-
-//		reporterr( "P score=%d, %d-%d, %d-%d\n", a[p].score, a[p].starti, a[p].endi, a[p].startj, a[p].endj );
-		for( q=p+1; a[q].i>-1; q++ )
-		{
-			if( a[q].starti == -1 ) continue;
-//			reporterr( "Q score=%d, %d-%d, %d-%d\n", a[q].score, a[q].starti, a[q].endi, a[q].startj, a[q].endj );
-
-
-			if( a[p].endi < a[q].starti && a[p].endj < a[q].startj ) 
-			{
-//				reporterr( "consistent\n" );
-				;
-			}
-			else if( a[p].endi == a[q].starti && a[p].endj < a[q].startj && a[q].starti<a[q].endi ) 
-			{
-				a[q].starti += 1; // 1 zai overlap
-			}
-			else if( a[p].endi < a[q].starti && a[p].endj == a[q].startj && a[q].startj<a[q].endj ) 
-			{
-				a[q].startj += 1; // 1 zai overlap
-			}
-			else if( a[q].endi < a[p].starti && a[q].endj < a[p].startj )
-			{
-//				reporterr( "consistent\n" );
-				;
-			}
-			else if( a[q].endi == a[p].starti && a[q].endj < a[p].startj && a[q].starti<a[q].endi ) // bug in v7.442
-			{
-				a[q].endi -= 1; // 1 zai overlap
-			}
-			else if( a[q].endi < a[p].starti && a[q].endj == a[p].startj && a[q].startj<a[q].endj )
-			{
-				a[q].endj -= 1; // 1 zai overlap
-			}
-			else 
-			{
-//				reporterr( "INconsistent\n" );
-				a[q].starti = a[q].startj = a[q].startj = a[q].endj = -1;
-			}
-		}
-		if( p % 1000 == 0 ) reporterr( "%d/%d\r", p, s );
-	}
-
-	qsort( a, s, sizeof( ExtAnch ), anchcomp );
-#if 0
-	reporterr( "after filtering and sorting\n" );
-	for( p=0; a[p].i>-1; p++ )
-	{
-		reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
-	}
-#endif
-}
-
 static void checkanchors_strongestfirst( ExtAnch *a, int s )
 {
 	int p, q;
@@ -1630,41 +1531,6 @@ static void checkanchors_strongestfirst( ExtAnch *a, int s )
 		reporterr( "a[%d].starti,j=%d,%d, score=%d\n", p, a[p].starti, a[p].startj, a[p].score );
 	}
 #endif
-}
-
-
-static double gapnongapratio( int n, char **s )
-{
-	int i, j, len;
-	char *seq, *pt1, *pt2;
-	double fv, ng;
-
-	len = strlen( s[0] );
-	seq = calloc( len+1, sizeof( char ) );
-
-	fv = 0.0;
-	ng = 0.0;
-	for( i=0; i<n; i++  )
-	{
-		pt1 = s[i];
-		while( *pt1 == '-' ) pt1++;
-		pt2 = seq;
-		while( *pt1 != 0 ) *pt2++ = *pt1++;
-		*pt2 = *pt1; // 0
-		pt1 = pt2-1;
-		while( *pt1 == '-' ) pt1--;
-		*(pt1+1) = 0;	
-//		reporterr( "seq[i]=%s\n", s[i] );
-//		reporterr( "seq=%s\n", seq );
-		len = pt1-seq+1;
-		for( j=0; j<len; j++ )
-			if( seq[j] == '-' ) 
-				fv+=1.0;
-			else
-				ng+=1.0;
-	}
-	free( seq );
-	return( fv/ng );
 }
 
 static void	pickpairanch( ExtAnch **pairanch, ExtAnch *extanch, int **anchindex, int n1, int n2, int *m1, int *m2, char **seq1, char **seq2 ) // loop no junban wo kaeta hou ga iikamo
@@ -1816,10 +1682,7 @@ static void	pickpairanch( ExtAnch **pairanch, ExtAnch *extanch, int **anchindex,
 #endif
 
 	reporterr( "Checking external anchors\n" );
-	if( maxanchorseparation != -1.0 )
-		checkanchors_strongestfirst_considerseparation( *pairanch, s, gapnongapratio( n1, seq1 ), gapnongapratio( n2, seq2 ) );
-	else
-		checkanchors_strongestfirst( *pairanch, s );
+	checkanchors_strongestfirst( *pairanch, s );
 
 
 #if 0
@@ -1832,6 +1695,7 @@ static void	pickpairanch( ExtAnch **pairanch, ExtAnch *extanch, int **anchindex,
 #endif
 }
 
+#ifdef enablemultithread
 static void *treebasethread( void *arg )
 {
 	treebasethread_arg_t *targ = (treebasethread_arg_t *)arg;
@@ -2347,7 +2211,7 @@ static void *treebasethread( void *arg )
 	reporterr(       "totalscore = %10.2f\n\n", tscore );
 #endif
 }
-#endif
+#endif // enablemultithread
 
 static int dooneiteration( int *nlen, char **aseq, int nadd, char *mergeoralign, char **mseq1, char **mseq2, int ***topol, Treedep *dep, int **memhist, double ***cpmxhist, double *effarr, double **newdistmtx, int *selfscore, ExtAnch *extanch, int **anchindex, int *alloclen, int (*callback)(int, int, char*) )
 {

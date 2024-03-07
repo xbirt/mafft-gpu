@@ -36,7 +36,7 @@
 
 
 
-#define VERSION "7.522"
+#define VERSION "7.525"
 #define SHOWVERSION reporterr( "%s (%s) Version " VERSION "\nalg=%c, model=%s, amax=%3.1f\n%d thread(s)\n\n", progName( argv[0] ), (dorp=='d')?"nuc":((nblosum==-2)?"text":"aa"), alg, modelname, specificityconsideration, nthread )
 
 #define FFT_THRESHOLD  80
@@ -388,6 +388,8 @@ extern char codonpos;
 extern char codonscore;
 
 extern char distout;
+
+extern int maxterminalmargin;
 
 
 /* for --large  */
