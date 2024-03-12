@@ -389,7 +389,7 @@ extern char codonscore;
 
 extern char distout;
 
-extern int maxterminalmargin;
+extern int terminalmargin;
 
 
 /* for --large  */

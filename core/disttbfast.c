@@ -345,7 +345,7 @@ void arguments( int argc, char *argv[] )
 					fftscore = 0;
 					break;
 				case 'x':
-					maxterminalmargin = myatoi( *++argv );
+					terminalmargin = myatoi( *++argv );
 					--argc; 
 					goto nextoption;
 				case 'H':

@@ -1834,10 +1834,9 @@ static double estimategapfreq( int n, char **s )
 	return( fv/(double)n );
 }
 
-static int terminalmargin( int lshorter, double groupsizefac )
+static int getterminalmargin( int lshorter, double groupsizefac )
 {
-	return ( lshorter * 2.0 + maxterminalmargin ) * groupsizefac;
-//	return ( MAX( 5000, lshorter * 2.0 + 100 ) * groupsizefac ); // 2023/Jan/11
+	return ( lshorter * 2.0 + terminalmargin ) * groupsizefac;
 //	return ( lshorter * 1.1 + 10 ) * groupsizefac;
 }
 
@@ -2154,11 +2153,11 @@ double Falign_givenanchors( ExtAnch *pairanch,
 //			if( pairanch[count0].starti - pairanch[count0].startj > TERMINALSEGMENTLENGTH ) // you kentou
 //			nogaplen1 = estimatenogaplen( clus1, seq1, pairanch[count0].starti, 0 );
 //			nogaplen2 = estimatenogaplen( clus2, seq2, pairanch[count0].startj, 0 );
-			if( pairanch[count0].starti > terminalmargin(pairanch[count0].startj,marginfac1) )
+			if( pairanch[count0].starti > getterminalmargin(pairanch[count0].startj,marginfac1) )
 			{
 //				alignorcopy[1] = 'A';
-				reporterr( "check 1, because starti=%d > startj=%d -> %d (clus1=%d)\n", pairanch[count0].starti, pairanch[count0].startj, terminalmargin(pairanch[count0].startj,marginfac1), clus1 );
-				cutadd = pairanch[count0].starti - terminalmargin(pairanch[count0].startj,marginfac1);
+				reporterr( "check 1, because starti=%d > startj=%d -> %d (clus1=%d)\n", pairanch[count0].starti, pairanch[count0].startj, getterminalmargin(pairanch[count0].startj,marginfac1), clus1 );
+				cutadd = pairanch[count0].starti - getterminalmargin(pairanch[count0].startj,marginfac1);
 				reporterr( "cutadd(1)=%d\n", cutadd );
 //				if( 0 || cutadd > TERMINALMARGIN(0) ) // iranai
 				{
@@ -2169,11 +2168,11 @@ double Falign_givenanchors( ExtAnch *pairanch,
 					starttermcut1 = 1;
 				}
 			}
-			else if( pairanch[count0].startj > terminalmargin(pairanch[count0].starti, marginfac2) )
+			else if( pairanch[count0].startj > getterminalmargin(pairanch[count0].starti, marginfac2) )
 			{
 //				alignorcopy[1] = 'A';
-				reporterr( "check 2, because startj=%d > starti=%d -> %d (clus2=%d)\n", pairanch[count0].startj, pairanch[count0].starti, terminalmargin(pairanch[count0].starti,marginfac2), clus2 );
-				cutadd = pairanch[count0].startj - terminalmargin( pairanch[count0].starti, marginfac2 );
+				reporterr( "check 2, because startj=%d > starti=%d -> %d (clus2=%d)\n", pairanch[count0].startj, pairanch[count0].starti, getterminalmargin(pairanch[count0].starti,marginfac2), clus2 );
+				cutadd = pairanch[count0].startj - getterminalmargin( pairanch[count0].starti, marginfac2 );
 				reporterr( "cutadd(2)=%d\n", cutadd );
 				{
 					cut1[1] = 0;
@@ -2219,7 +2218,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 #if 1 // mattan no tansaku hanni wo seigen
 	alignorcopy[count] = 'a';
 //	if( count > 1 && (len1-cut1[count]) > (len2-cut2[count]) + 2*TERMINALSEGMENTLENGTH ) // 2 ha tekitou
-	if( count > 1 && (len1-cut1[count]) > terminalmargin(len2-cut2[count],marginfac1) )
+	if( count > 1 && (len1-cut1[count]) > getterminalmargin(len2-cut2[count],marginfac1) )
 	{
 //		reporterr( "last\n" );
 //		alignorcopy[count] = 'A'; // mae no wo uwagaki
@@ -2228,7 +2227,7 @@ double Falign_givenanchors( ExtAnch *pairanch,
 //		cut1[count+1] = cut1[count] + TERMINALSEGMENTLENGTH;
 //		cut1[count+1] = cut1[count] + (len2-cut2[count]) + TERMINALSEGMENTLENGTH;
 
-		cutadd = len1 - 1 - ( (len1-cut1[count]) - terminalmargin(len2-cut2[count], marginfac1) ); // wakarinikuikedo
+		cutadd = len1 - 1 - ( (len1-cut1[count]) - getterminalmargin(len2-cut2[count], marginfac1) ); // wakarinikuikedo
 
 //		if( 1 || len1-1 - cutadd > TERMINALMARGIN(0) )
 		{
@@ -2244,13 +2243,13 @@ double Falign_givenanchors( ExtAnch *pairanch,
 		}
 	}
 //	else if( count > 1 && (len2-cut2[count]) > (len1-cut1[count])  + 2*TERMINALSEGMENTLENGTH ) // 2 ha tekitou
-	else if( count > 1 && (len2-cut2[count]) > terminalmargin(len1-cut1[count],marginfac2) )
+	else if( count > 1 && (len2-cut2[count]) > getterminalmargin(len1-cut1[count],marginfac2) )
 	{
 //		reporterr( "last\n" );
 //		alignorcopy[count] = 'A'; // mae no wo uwagaki
 		//reporterr( "insert one anchor to restrict terminal gap length, 2, cut1[count]=%d, cut2[count]=%d\n", cut1[count], cut2[count] );
 		//alignorcopy[count] = 'A'; // mae no wo uwagaki
-		cutadd = len2 - 1 - ( (len2-cut2[count]) - terminalmargin(len1-cut1[count], marginfac2) );
+		cutadd = len2 - 1 - ( (len2-cut2[count]) - getterminalmargin(len1-cut1[count], marginfac2) );
 
 //		if( 1 || len2-1 - cutadd > TERMINALMARGIN(0) ) // iranai
 		{
