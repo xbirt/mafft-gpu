@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # MAFFT version 7.525
-=======
-# MAFFT version 7.524
->>>>>>> c936e351afe07fd02cca7f6579207d387fe4aa1c
 Multiple sequence alignment program
 <br>
 https://mafft.cbrc.jp/alignment/software/
