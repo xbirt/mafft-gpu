@@ -136,7 +136,7 @@ char codonscore = 0;
 
 char distout = 0;
 
-int terminalmargin = 5000;
+int terminalmargin = 100;
 
 
 void initglobalvariables()
