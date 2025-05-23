@@ -1,6 +1,7 @@
 #include "mltaln.h"
+#include "dp_kernels.h" // For dp_kernels_test_function
 
-#define DEBUG 0 
+#define DEBUG 0
 
 #if DEBUG
 #include <time.h>
@@ -328,6 +329,9 @@ int main( int argc, char *argv[] )
 	char c;
 	int nlenmax1, nlenmax2, nseq1, nseq2;
 	int alloclen;
+
+	// Call CUDA test function
+	dp_kernels_test_function();
 
 	argv2 = arguments( argc, argv );
 

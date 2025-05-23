@@ -1,5 +1,6 @@
 #include "mltaln.h"
 #include "dp.h"
+#include "dp_kernels.h"
 
 #define MEMSAVE 1
 

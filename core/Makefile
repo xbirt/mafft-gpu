@@ -24,6 +24,18 @@ CFLAGS = -O3
 #CFLAGS = -O3 -fPIC
 # add -fPIC when building .so files
 
+# CUDA settings
+NVCC = nvcc
+# Adjust sm_XX to a suitable default, e.g., sm_50 or make it configurable
+NVCCFLAGS = -O3 -arch=sm_50 -dc $(ENABLE_MULTITHREAD) $(ENABLE_ATOMIC)
+# Or, to support more architectures:
+# NVCCFLAGS = -O3 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_70,code=sm_70 -dc $(ENABLE_MULTITHREAD) $(ENABLE_ATOMIC)
+
+# CUDA paths (assuming standard location)
+CUDA_HOME ?= /usr/local/cuda
+CUDA_INCLUDE_DIR = $(CUDA_HOME)/include
+CUDA_LIB_DIR = $(CUDA_HOME)/lib64
+
 #CC = icc
 #CFLAGS = -fast
 # if you have icc, use this.
@@ -36,9 +48,9 @@ CFLAGS = -O3
 
 
 ifdef ENABLE_MULTITHREAD
-LIBS = -lm  -lpthread
+LIBS = -lm  -lpthread -lcudart
 else
-LIBS = -lm
+LIBS = -lm -lcudart
 endif
 
 ifdef ENABLE_ATOMIC
@@ -47,7 +59,8 @@ else
 STDF = -std=c99
 endif
 
-MYCFLAGS = $(MNO_CYGWIN) $(ENABLE_MULTITHREAD) $(ENABLE_ATOMIC) $(STDF) $(CFLAGS)
+MYCFLAGS = $(MNO_CYGWIN) $(ENABLE_MULTITHREAD) $(ENABLE_ATOMIC) $(STDF) $(CFLAGS) -I$(CUDA_INCLUDE_DIR)
+LDFLAGS += -L$(CUDA_LIB_DIR)
 
 INSTALL = install
 
@@ -134,7 +147,7 @@ OBJTRIPLET5 = io.o constants.o mtxutl.o mltaln9.o tddis.o triplet5.o defs.o
 OBJOCTET4 = io.o constants.o mtxutl.o mltaln9.o tddis.o octet4.o defs.o
 OBJDNDPRE = dndpre.o io.o constants.o mtxutl.o mltaln9.o defs.o Galign11.o Lalign11.o genalign11.o
 OBJGALN = io.o mtxutl.o mltaln9.o tddis.o constants.o partSalignmm.o MSalignmm.o Lalignmm.o rna.o Salignmm.o Dalignmm.o \
-          SAalignmm.o Galign11.o Lalign11.o genalign11.o Falign.o Falign_localhom.o fftFunctions.o fft.o mafft-profile.o defs.o
+          SAalignmm.o Galign11.o Lalign11.o genalign11.o Falign.o Falign_localhom.o fftFunctions.o fft.o mafft-profile.o defs.o dp_kernels.o cuda_utils.o
 OBJSCORE = io.o mtxutl.o mltaln9.o score.o constants.o defs.o Galign11.o Lalign11.o genalign11.o
 
 HEADER = mltaln.h mtxutl.h mafft.h
@@ -273,7 +286,7 @@ dvtditr : $(OBJDVTDITR)
 	$(CC) -o $@ $(OBJDVTDITR) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
 
 mafft-profile : $(OBJGALN)
-	$(CC) -o $@ $(OBJGALN) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
+	$(NVCC) -o $@ $(OBJGALN) $(filter-out -std=c99,$(filter-out -std=c11,$(MYCFLAGS))) $(LDFLAGS) $(LIBS) -arch=sm_50
 
 gapfill : $(OBJGAPFILL)
 	$(CC) -o $@ $(OBJGAPFILL) $(MYCFLAGS) $(LDFLAGS) $(LIBS)
@@ -522,8 +535,12 @@ addfunctions.o : addfunctions.c $(HEADER)
 score.o : score.c $(HEADER)
 	$(CC) $(MYCFLAGS) -c score.c
 
+# Rule for .cu files
+%.o: %.cu $(HEADER) $(FFTHEADER)
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@ $(filter-out -std=c99,$(filter-out -std=c11,$(MYCFLAGS)))
+
 clean :
-	rm -f *.o *.a *.exe *~ $(PERLPROGS) $(PROGS) $(SCRIPTS) $(SOS) $(DYLIBS) $(DLLS) *.gcda *.gcno $(DASH_CLIENT)
+	rm -f *.o *.a *.exe *~ $(PERLPROGS) $(PROGS) $(SCRIPTS) $(SOS) $(DYLIBS) $(DLLS) *.gcda *.gcno $(DASH_CLIENT) cuda_utils.o dp_kernels.o
 #	rm -f ../binaries/* ../scripts/*
 
 install : all

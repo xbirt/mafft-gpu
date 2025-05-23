@@ -1,3 +1,6 @@
+#ifndef MLTALN_H_INCLUDED
+#define MLTALN_H_INCLUDED
+
 #define USE_XCED 0
 
 #define _XOPEN_SOURCE
@@ -401,3 +404,5 @@ extern int nadd;
 extern int usenaivescoreinsteadofalignmentscore;
 #define MYBUFSIZE 1000 * 1000 * 100 // 100MB
 extern int LineLengthInFASTA;
+
+#endif // MLTALN_H_INCLUDED
