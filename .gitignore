@@ -1,0 +1,159 @@
+# Compiled object files, static and dynamic libs
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+*.lib
+*.exe
+*.out
+*.obj
+*.elf
+*.bin
+*.class
+
+# Compiled Go binaries
+*.test
+*.exe
+*.out
+
+# C/C++/Fortran executables (common names)
+core/mafft
+core/makedirectionlist
+core/setdirection
+core/restoreu
+core/replaceu
+core/filter
+core/setcore
+core/dndpre
+core/getlag
+core/score
+core/regtable2seq
+core/seq2regtable
+core/countlen
+core/contrafoldwrap
+core/mccaskillwrap
+core/f2cl
+core/mafft-profile
+core/nodepair
+core/tbfast
+core/disttbfast
+core/splittbfast
+core/addsingle
+core/pairash
+core/multi2hat3s
+core/pairlocalalign
+core/mafft-distance
+core/sextet5
+core/dndblast
+core/dndfast7
+core/dvtditr
+binaries/*
+
+# Object files in all subdirs
+**/*.o
+
+# Ruby, Perl, and Bash temp files
+*.pid
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*~
+
+# Ruby specific
+*.gem
+*.rbc
+.bundle/
+.ruby-version
+.ruby-gemset
+
+# Go specific
+/go.sum
+/go.mod
+/vendor/
+
+# Makefile auto-generated files
+Makefile.in
+Makefile.out
+*.d
+
+# Test outputs
+/test/*.out
+/test/*.log
+/test/*.tmp
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Backup and swap files
+*~
+*.swp
+*.swo
+*.bak
+*.old
+
+# Temporary files
+/tmp/
+*.tmp
+*.temp
+
+# Coverage and profiling
+*.gcov
+*.gcda
+*.gcno
+*.prof
+*.cov
+
+# Miscellaneous
+*.orig
+*.rej
+
+# Ignore by name (if present)
+core/version
+binaries/version
+
+# Ignore empty keep files
+**/.gitkeep
+
+# Ignore build directories
+/build/
+/dist/
+
+# Ignore generated documentation
+/docs/
+
+# Ignore user-specific config
+*.user
+*.local
+
+# Ignore Python cache (if any)
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore binaries and scripts
+binaries/
+scripts/
+
+# Ignore any FASTA files
+*.fasta
+*.fas
+*.fa
+*.fna
+*.ffn
+*.fasta.gz
+*.fas.gz
+
+# Ignore node_modules just in case
+node_modules/ 
