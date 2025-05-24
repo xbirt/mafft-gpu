@@ -156,4 +156,10 @@ scripts/
 *.fas.gz
 
 # Ignore node_modules just in case
-node_modules/ 
+node_modules/
+
+
+core/mafft-*
+core/*.pl
+core/hex2maffttext
+core/maffttext2hex
