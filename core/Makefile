@@ -36,9 +36,9 @@ CFLAGS = -O3
 
 
 ifdef ENABLE_MULTITHREAD
-LIBS = -lm  -lpthread
+LIBS = -lm  -lpthread -lOpenCL
 else
-LIBS = -lm
+LIBS = -lm -lOpenCL
 endif
 
 ifdef ENABLE_ATOMIC
@@ -97,7 +97,7 @@ OBJSPLITTBFASTP = mtxutl.o io.o mltaln9.o tddis.o constants.o partSalignmm.o Lal
 			defs.o fft.o fftFunctions.o
 OBJDISTTBFAST = mtxutl.o io.o mltaln9.o tddis.o constants.o partSalignmm.o Lalignmm.o rna.o Salignmm.o Dalignmm.o \
 		    Falign.o Falign_localhom.o Galign11.o Lalign11.o genalign11.o SAalignmm.o MSalignmm.o \
-			disttbfast.o defs.o fft.o fftFunctions.o addfunctions.o
+			disttbfast.o defs.o fft.o fftFunctions.o addfunctions.o opencl_utils.o
 OBJMAKEDIRECTIONLIST = mtxutl.o io.o mltaln9.o tddis.o constants.o partSalignmm.o Lalignmm.o rna.o Salignmm.o  Dalignmm.o \
 		    Falign.o Falign_localhom.o Galign11.o Lalign11.o genalign11.o SAalignmm.o MSalignmm.o \
 			makedirectionlist.o defs.o fft.o fftFunctions.o addfunctions.o
@@ -408,8 +408,10 @@ nodepair.o : nodepair.c $(HEADER) $(FFTHEADER)
 	$(CC) $(MYCFLAGS) -c nodepair.c
 
 addsingle.o : addsingle.c $(HEADER) $(FFTHEADER)
-addsingle.o : addsingle.c $(HEADER) $(FFTHEADER)
 	$(CC) $(MYCFLAGS) -c addsingle.c
+
+opencl_utils.o : opencl_utils.c opencl_utils.h $(HEADER)
+	$(CC) $(MYCFLAGS) -c opencl_utils.c
 
 tbfast2.o : tbfast2.c $(HEADER) $(FFTHEADER)
 	$(CC) $(MYCFLAGS) -c tbfast2.c
@@ -556,4 +558,4 @@ rm -f mafft-distance mafft-distance.exe; ln -s $(LIBDIR)/mafft-distance . )
 	chmod 755 $(DESTDIR)$(MANDIR)
 	$(INSTALL) -m 644 $(MANPAGES) $(DESTDIR)$(MANDIR)
 # remove incorrectly installed manpages by previous versions
-#	rm -f /usr/local/man/man1/mafft.1 /usr/local/man/man1/mafft-homologs.1 
+#	rm -f /usr/local/man/man1/mafft.1 /usr/local/man/man1/mafft-homologs.1

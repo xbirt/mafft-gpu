@@ -1,4 +1,5 @@
 #include "mltaln.h"
+#include "opencl_utils.h"
 
 
 #define REPORTCOSTS 0
@@ -514,6 +515,9 @@ void arguments( int argc, char *argv[] )
     if( argc != 0 ) 
     {
         reporterr(       "options: Check source file !\n" );
+        if (perform_simple_opencl_operation() != 0) {
+            reporterr(       "OpenCL operation failed.\n" );
+        }
         exit( 1 );
     }
 	if( tbitr == 1 && outgap == 0 )
