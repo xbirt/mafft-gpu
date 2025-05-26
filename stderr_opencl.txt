@@ -1,0 +1,10 @@
+--- stderr_opencl.txt ---
+generating a scoring matrix for nucleotide (dist=200) ... done
+All-to-all alignment.
+    0 / 3 (by thread   0) 
+
+##### writing hat3
+pairlocalalign (nuc) Version 7.526
+alg=A, model=DNA200 (2), 1.53 (4.59), 0.37 (1.11), noshift, amax=0.0
+1 thread(s)
+

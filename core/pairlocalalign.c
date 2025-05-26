@@ -1,6 +1,16 @@
 #include "mltaln.h"
+#include "opencl_align.h" // Added for OpenCL alignment
+
+#include <float.h> // For FLT_MAX
 
 #define DEBUG 0
+
+// Define to use OpenCL version of G__align11
+// #define USE_OPENCL_G_ALIGN11 1
+
+#ifndef NEGATIVE_INFINITY
+#define NEGATIVE_INFINITY (-FLT_MAX)
+#endif
 #define IODEBUG 0
 #define SCOREOUT 0
 #define SHISHAGONYU 0 // for debug
@@ -2822,7 +2832,21 @@ static void pairalign( char **name, int *nlen, char **seq, char **aseq, char **d
 //									if( store_localhom )
 									if( store_localhom && ( targetmap[i] != -1 || targetmap[j] != -1 ) )
 									{
+#ifdef USE_OPENCL_G_ALIGN11
+                                reporterr(       "Using OpenCL G__align11_cl\n" );
+                                pscore = G__align11_cl( NULL, NULL, NULL, NULL,
+                                                        n_dis_consweight_multi, 
+                                                        mseq1[0], mseq2[0],
+                                                        outgap, outgap,      // headgp, tailgp
+                                                        (float)penalty, (float)penalty_ex,
+                                                        mseq1[0], mseq2[0], alloclen );
+                                if( pscore == NEGATIVE_INFINITY ) { 
+                                    reporterr("OpenCL G__align11_cl failed, falling back to CPU version.\n");
+                                    pscore = G__align11( n_dis_consweight_multi, mseq1, mseq2, alloclen, outgap, outgap );
+                                }
+#else
 										pscore = L__align11( n_dis_consweight_multi, 0.0, mseq1, mseq2, alloclen, &off1, &off2 ); // all pair
+#endif
 										if( thereisx ) pscore = L__align11_noalign( n_dis_consweight_multi, distseq1, distseq2 ); // all pair
 #if 1
 										if( specificityconsideration > 0.0 )
